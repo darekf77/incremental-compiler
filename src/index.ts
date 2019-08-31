@@ -7,8 +7,10 @@ import * as incCompiler from './incremental-compiler.backend';
 import * as incBase from './base-client-compiler.backend';
 import * as change from './change-of-file.backend';
 import * as deco from './inc-compiler-decorators.backend';
+import * as models from './models';
 import { Helpers } from './helpers';
 import * as _ from 'lodash';
+import { CLASS } from 'typescript-class-helpers';
 
 export interface HelpersToOverride {
   info: Function;
@@ -38,6 +40,8 @@ export interface HelpersToOverride {
  * }
  */
 export namespace IncCompiler {
+  export import Models = models.Models;
+
   /**
    * 1. Only one task at the time
    * 2. Only files changes not directories
@@ -59,5 +63,14 @@ export namespace IncCompiler {
     export import AsyncAction = deco.AsyncAction;
   }
   export import Change = change.ChangeOfFile;
+  export function getInstance<CLASS_TYPE>(compilerClassName: string): CLASS_TYPE {
+    if (_.isString(compilerClassName)) {
+      var cl = CLASS.getBy(compilerClassName);
+    }
+    if (!cl) {
+      Helpers.error(`Compiler instance not found... incorrect class name "${compilerClassName}"  `)
+    }
+    return cl as any;
+  }
 }
 //#endregion
