@@ -11,7 +11,7 @@
       "includeAsDev": [],
       "includeOnly": [],
       "dependencies": {
-        "incremental-compiler": "0.0.1"
+        "incremental-compiler": "0.0.2"
       }
     },
     "isGenerated": false
