@@ -2,8 +2,7 @@
 import { CLASS } from 'typescript-class-helpers';
 import * as _ from 'lodash';
 import { ChangeOfFile } from './change-of-file.backend';
-import { error } from '../../../helpers';
-import { CompilerManager } from './incremental-compiler.backend';
+import { Helpers } from './helpers';
 
 export function AsyncAction(options?: any[]) {
   return (
@@ -48,7 +47,7 @@ export function IncCompilerClass(options: IncCompilerClassOptions) {
   return (target) => {
     const { className } = options;
     if (instancesNames.includes(className)) {
-      error(`Compiler class "${className}" already has instance.`, false, true);
+      Helpers.error(`Compiler class "${className}" already has instance.`, false, true);
     }
     instancesNames.push(className);
     CLASS.NAME(className, { singleton: 'autoinstance' })(target);

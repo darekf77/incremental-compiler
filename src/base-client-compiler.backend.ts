@@ -7,22 +7,13 @@ import { CLASS } from 'typescript-class-helpers';
 
 import { ChangeOfFile } from './change-of-file.backend';
 import { CompilerManager } from './incremental-compiler.backend';
-import { FileExtension } from '../../../models';
-import { warn } from '../../../helpers/helpers-messages';
-import { compilationWrapperTnp } from '../../../helpers/helpers-process';
+import { Models } from './models';
+import { Helpers } from './helpers';
 import chalk from 'chalk';
-
-
-export interface BaseClientCompilerOptions {
-  folderPath?: string;
-  executeOutsideScenario?: boolean;
-  subscribeOnlyFor?: FileExtension[];
-}
-
 
 export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA = any> {
 
-  private compilationWrapper = compilationWrapperTnp;
+  private compilationWrapper = Helpers.compilationWrapper;
   private pathResolve = false;
 
   //#region folder path
@@ -36,7 +27,7 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
       if (fse.existsSync(this.__folderPath)) {
         this.__folderPath = path.resolve(this.__folderPath);
       } else {
-        warn(`[BaseClientCompiler] client "${CLASS.getNameFromObject(this)}" folderPath doesn't not exist ${this.folderPath}`)
+        Helpers.warn(`[BaseClientCompiler] client "${CLASS.getNameFromObject(this)}" folderPath doesn't not exist ${this.folderPath}`)
         return void 0;
       }
     }
@@ -44,11 +35,11 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
   }
   //#endregion
 
-  public readonly subscribeOnlyFor: FileExtension[] = []
+  public readonly subscribeOnlyFor: Models.FileExtension[] = []
   public readonly executeOutsideScenario: boolean;
 
   //#region constructor
-  set(options?: BaseClientCompilerOptions): BaseClientCompiler<RES_ASYNC, RES_SYNC, ADDITIONAL_DATA> {
+  set(options?: Models.BaseClientCompilerOptions): BaseClientCompiler<RES_ASYNC, RES_SYNC, ADDITIONAL_DATA> {
     if (_.isUndefined(options)) {
       options = {} as any;
     }
@@ -98,7 +89,7 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
     await this.start(taskName, afterInitCallBack);
     if (_.isFunction(this.preAsyncAction)) {
       await this.compilationWrapper(this.preAsyncAction,
-        `${chalk.green('pre-async action')} for ${taskName}`,'Event:');
+        `${chalk.green('pre-async action')} for ${taskName}`, 'Event:');
     }
     await CompilerManager.Instance.asyncInit(this);
     return this;

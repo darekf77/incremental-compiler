@@ -6,7 +6,7 @@ import * as fse from 'fs-extra';
 import { CLASS } from 'typescript-class-helpers';
 
 import { BaseClientCompiler } from './base-client-compiler.backend';
-import { FileExtension } from '../../../models';
+import { Models } from './models';
 export interface ChangeOfFileCloneOptios {
   onlyForClient?: BaseClientCompiler[];
 }
@@ -27,8 +27,8 @@ export class ChangeOfFile {
       return f.subscribeOnlyFor.includes(this.fileExt);
     });
   }
-  public get fileExt(): FileExtension {
-    return path.extname(this.fileAbsolutePath).replace('.', '') as FileExtension;
+  public get fileExt(): Models.FileExtension {
+    return path.extname(this.fileAbsolutePath).replace('.', '') as Models.FileExtension;
   }
 
   constructor(

@@ -4,11 +4,10 @@ import * as _ from 'lodash';
 import * as glob from 'glob';
 import * as fse from 'fs-extra';
 import { CLASS } from 'typescript-class-helpers';
-import { error, warn, log } from '../../../helpers/helpers-messages';
+import { Helpers } from './helpers';
 import { ChangeOfFile } from './change-of-file.backend';
 import { BaseClientCompiler } from './base-client-compiler.backend';
-import { FileExtension } from '../../../models';
-import { patchingForAsync } from '../../../helpers';
+import { Models } from './models';
 
 
 export class CompilerManager {
@@ -33,13 +32,14 @@ export class CompilerManager {
   public addClient(client: BaseClientCompiler) {
     const existed = this.clients.find(c => CLASS.getNameFromObject(c) === CLASS.getNameFromObject(client));
     if (existed) {
-      error(`Client "${CLASS.getNameFromObject(client)}" alread added`, false, true);
+      Helpers.error(`Client "${CLASS.getNameFromObject(client)}" alread added`, false, true);
     }
     this.clients.push(client);
   }
 
   public async initScenario(
     onAsyncFileChange?: (event: ChangeOfFile) => Promise<any>) {
+    this.preventAlreadyInited()
     this.asyncEventScenario = onAsyncFileChange;
     this.inited = true;
   }
@@ -90,10 +90,10 @@ export class CompilerManager {
     }
   }
 
-  private preventNotInited() {
-    if (!this.inited) {
-      error(`Please init Compiler Manager:
-      CompilerManager.Instance.init( ... async scenario ...  );
+  private preventAlreadyInited() {
+    if (this.inited) {
+      Helpers.error(`Please init Compiler Manager only once:
+      CompilerManager.Instance.initScenario( ... async scenario ...  );
       `, false, true)
     }
   }
@@ -119,7 +119,7 @@ export class CompilerManager {
         symlinks: false,
       }).filter(f => {
         if (client.subscribeOnlyFor.length > 0) {
-          return client.subscribeOnlyFor.includes(path.extname(f).replace('.', '') as FileExtension);
+          return client.subscribeOnlyFor.includes(path.extname(f).replace('.', '') as Models.FileExtension);
         }
         return true;
       })
