@@ -10,7 +10,9 @@
       "ignoreDepsPattern": [],
       "includeAsDev": [],
       "includeOnly": [],
-      "dependencies": {}
+      "dependencies": {
+        "incremental-compiler": "0.0.1"
+      }
     },
     "isGenerated": false
   },
