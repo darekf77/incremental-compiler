@@ -7,8 +7,8 @@ import { CLASS } from 'typescript-class-helpers';
 
 import { ChangeOfFile } from './change-of-file.backend';
 import { CompilerManager } from './incremental-compiler.backend';
-import { Models } from './models';
-import { Helpers } from './helpers';
+import { Models } from './models.backend';
+import { Helpers } from './helpers.backend';
 import chalk from 'chalk';
 
 export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA = any> {
@@ -17,19 +17,21 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
   private pathResolve = false;
 
   //#region folder path
-  private __folderPath: string;
+  private __folderPath: string[] = [];
   public set folderPath(v) {
     this.__folderPath = v;
   }
-  public get folderPath(): string {
+  public get folderPath(): string[] {
     if (!this.pathResolve) {
       this.pathResolve = true;
-      if (fse.existsSync(this.__folderPath)) {
-        this.__folderPath = path.resolve(this.__folderPath);
-      } else {
-        Helpers.warn(`[BaseClientCompiler] client "${CLASS.getNameFromObject(this)}" folderPath doesn't not exist ${this.folderPath}`)
-        return void 0;
-      }
+      this.__folderPath.map(p => {
+        if (fse.existsSync(p)) {
+          return path.resolve(p);
+        } else {
+          Helpers.warn(`[BaseClientCompiler] client "${CLASS.getNameFromObject(this)}" folderPath doesn't not exist ${this.folderPath}`)
+          return void 0;
+        }
+      }).filter(f => !!f);
     }
     return this.__folderPath;
   }
@@ -37,9 +39,10 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
 
   public readonly subscribeOnlyFor: Models.FileExtension[] = []
   public readonly executeOutsideScenario: boolean;
+  public readonly watchDepth: Number;
 
   //#region constructor
-  set(options?: Models.BaseClientCompilerOptions): BaseClientCompiler<RES_ASYNC, RES_SYNC, ADDITIONAL_DATA> {
+  constructor(options?: Models.BaseClientCompilerOptions) {
     if (_.isUndefined(options)) {
       options = {} as any;
     }
@@ -49,12 +52,22 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
     if (!_.isArray(options.subscribeOnlyFor)) {
       options.subscribeOnlyFor = []
     }
-    if (!_.isString(options.folderPath)) {
-      options.folderPath = void 0;
+    if (_.isUndefined(options.folderPath)) {
+      options.folderPath = [];
     }
-    const { executeOutsideScenario, folderPath, subscribeOnlyFor } = options;
-    Object.assign(this, { executeOutsideScenario, subscribeOnlyFor, folderPath });
-    return this;
+    if (_.isString(options.folderPath)) {
+      options.folderPath = [options.folderPath];
+    }
+    if (!_.isString(options.folderPath) && !_.isArray(options.folderPath)) {
+      Helpers.error(`Folder path shoudl be string or array`, false, true);
+    }
+    if (_.isUndefined(options.watchDepth)) {
+      options.watchDepth = Number.POSITIVE_INFINITY;
+    }
+    if (_.isNumber(options.watchDepth)) {
+      options.watchDepth = Math.abs(options.watchDepth);
+    }
+    Object.assign(this, options);
   }
   //#endregion
 

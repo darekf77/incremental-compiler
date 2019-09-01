@@ -1,9 +1,30 @@
-//#region @backend
 import chalk from 'chalk';
 import * as dateformat from "dateformat";
-//#endregion
+import { BaseClientCompiler } from './base-client-compiler.backend';
 import * as _ from 'lodash';
 import { Helpers as Base } from 'ng2-logger';
+
+import { CLASS } from 'typescript-class-helpers';
+
+export function clientsBy<T = BaseClientCompiler>(clientNameOrClass: string | Function,
+  condition: (c: T) => boolean, clients: BaseClientCompiler[]): T[] {
+  if (_.isFunction(clientNameOrClass)) {
+    clientNameOrClass = CLASS.getName(clientNameOrClass)
+  }
+
+  return clients.filter(cinstance => {
+    const classesOk = (CLASS.getNameFromObject(cinstance) === clientNameOrClass);
+    if (classesOk) {
+      if (_.isFunction(condition)) {
+        return !!condition(cinstance as any);
+      } else {
+        return true;
+      }
+    }
+    return false;
+  }) as any;
+}
+
 
 export class HelpersIncCompiler extends Base {
 
@@ -18,11 +39,9 @@ export class HelpersIncCompiler extends Base {
   //#endregion
   public error(details: any, noExit = false, noTrace = false) {
     console.error(details)
-    //#region @backend
     if (!noExit) {
       process.exit(0)
     }
-    //#endregion
   }
 
   public info(details: string) {
@@ -37,7 +56,7 @@ export class HelpersIncCompiler extends Base {
     console.warn(details);
   }
 
-  //#region @backend
+
   public async  runSyncOrAsync(fn: Function, args?: any[]) {
     if (_.isUndefined(fn)) {
       return;
@@ -51,10 +70,7 @@ export class HelpersIncCompiler extends Base {
     // console.log('was promis ', wasPromise)
     return promisOrValue;
   }
-  //#endregion
 
-
-  //#region @backend
   public async compilationWrapper(fn: () => void, taskName: string = 'Task',
     executionType: 'Compilation of' | 'Code execution of' | 'Event:' = 'Compilation of') {
     function currentDate() {
@@ -75,8 +91,6 @@ export class HelpersIncCompiler extends Base {
       process.exit(1);
     }
   }
-  //#endregion
-
 
 }
 

@@ -7,8 +7,8 @@ import * as incCompiler from './incremental-compiler.backend';
 import * as incBase from './base-client-compiler.backend';
 import * as change from './change-of-file.backend';
 import * as deco from './inc-compiler-decorators.backend';
-import * as models from './models';
-import { Helpers } from './helpers';
+import * as models from './models.backend';
+import { Helpers } from './helpers.backend';
 import * as _ from 'lodash';
 import { CLASS } from 'typescript-class-helpers';
 
@@ -57,6 +57,9 @@ export namespace IncCompiler {
       })
     }
   };
+  export function allClients<T>(clientNameOrClass?: string | Function, condition?: (c: T) => boolean) {
+    return incCompiler.CompilerManager.Instance.allClients.get(clientNameOrClass, condition)
+  }
   export import Base = incBase.BaseClientCompiler;
   export import Class = deco.IncCompilerClass;
   export namespace methods {
@@ -72,5 +75,7 @@ export namespace IncCompiler {
     }
     return cl as any;
   }
+
+
 }
 //#endregion

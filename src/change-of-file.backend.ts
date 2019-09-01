@@ -1,12 +1,15 @@
+
 import * as chokidar from 'chokidar';
 import * as path from 'path';
 import * as _ from 'lodash';
 import * as glob from 'glob';
 import * as fse from 'fs-extra';
 import { CLASS } from 'typescript-class-helpers';
-
+import { clientsBy } from './helpers.backend';
 import { BaseClientCompiler } from './base-client-compiler.backend';
-import { Models } from './models';
+import { Models } from './models.backend';
+import { CompilerManager } from './incremental-compiler.backend';
+
 export interface ChangeOfFileCloneOptios {
   onlyForClient?: BaseClientCompiler[];
 }
@@ -14,7 +17,8 @@ export interface ChangeOfFileCloneOptios {
 
 export class ChangeOfFile {
   public executedFor: BaseClientCompiler[] = [];
-  private _clientsForChange: BaseClientCompiler[] = [];
+  private readonly _clientsForChange: BaseClientCompiler[] = [];
+
   public get clientsForChange() {
     return this._clientsForChange.filter(f => !this.executedFor.includes(f));
   }
@@ -41,22 +45,11 @@ export class ChangeOfFile {
 
   public readonly datetime: Date;
 
-  private clientBy<T = BaseClientCompiler>(ins: BaseClientCompiler): T {
-
-    return this.clientsForChange.find(cinstance => {
-      return CLASS.getNameFromObject(cinstance) === CLASS.getNameFromObject(ins);
-    }) as any;
+  clientsBy<T = BaseClientCompiler>(clientNameOrClass: string | Function,
+    condition?: (c: T) => boolean): T[] {
+    return clientsBy(clientNameOrClass, condition, this.clientsForChange);
   }
 
-  public clients<C>(clients): { [name in keyof C]: BaseClientCompiler } {
-    // console.log('clients', clients)
-    Object.keys(clients).forEach(key => {
-      clients[key] = this.clientBy<C>(clients[key]);
-    });
-    return clients;
-  }
-
-  clone(options?: ChangeOfFileCloneOptios): ChangeOfFile {
-    return void 0;
-  }
 }
+
+

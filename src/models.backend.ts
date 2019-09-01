@@ -6,7 +6,8 @@ export namespace Models {
   export type FileExtension = 'ts' | 'js' | 'json' | 'html' | 'jpg' | 'png' | 'txt' | CutableFileExt;
 
   export interface BaseClientCompilerOptions {
-    folderPath?: string;
+    folderPath?: string | string[];
+    watchDepth?: Number;
     executeOutsideScenario?: boolean;
     subscribeOnlyFor?: FileExtension[];
   }

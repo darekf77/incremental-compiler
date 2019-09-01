@@ -4,10 +4,10 @@ import * as _ from 'lodash';
 import * as glob from 'glob';
 import * as fse from 'fs-extra';
 import { CLASS } from 'typescript-class-helpers';
-import { Helpers } from './helpers';
+import { Helpers, clientsBy } from './helpers.backend';
 import { ChangeOfFile } from './change-of-file.backend';
 import { BaseClientCompiler } from './base-client-compiler.backend';
-import { Models } from './models';
+import { Models } from './models.backend';
 
 
 export class CompilerManager {
@@ -26,11 +26,24 @@ export class CompilerManager {
   private lastAsyncFiles = [];
   private currentObservedFolder = [];
   private clients: BaseClientCompiler[] = [];
+
+  public get allClients() {
+    const that = this;
+    return {
+      get<T = BaseClientCompiler>(clientNameOrClass: string | Function,
+        condition: (c: T) => boolean) {
+        if (_.isUndefined(clientNameOrClass) && _.isUndefined(condition)) {
+          return that.clients;
+        }
+        return clientsBy(clientNameOrClass, condition, that.clients)
+      }
+    }
+  }
   private asyncEventScenario: (event: ChangeOfFile) => Promise<ChangeOfFile>;
   private inited = false;
 
   public addClient(client: BaseClientCompiler) {
-    const existed = this.clients.find(c => CLASS.getNameFromObject(c) === CLASS.getNameFromObject(client));
+    const existed = this.clients.find(c => c === client);
     if (existed) {
       Helpers.error(`Client "${CLASS.getNameFromObject(client)}" alread added`, false, true);
     }
@@ -68,10 +81,22 @@ export class CompilerManager {
           } else {
             this.lastAsyncFiles.push(f);
           }
-          // log(`event ${event}, path: ${f}`);
+          // Helpers.log(`event ${event}, path: ${f}`);
+          // console.log('this.clients', this.clients.map(c => CLASS.getNameFromObject(c)))
           const toNotify = this.clients
-            .filter(c => f.startsWith(c.folderPath));
-          // console.log('toNotify', toNotify)
+            .filter(c => {
+              return c.folderPath.find(p => {
+                if (f.startsWith(p)) {
+                  if (c.watchDepth === Number.POSITIVE_INFINITY) {
+                    return true;
+                  }
+                  const r = f.replace(p, '').replace(/^\//, '').split('/').length - 1;
+                  return r <= c.watchDepth;
+                }
+                return false;
+              });
+            });
+          // console.log('toNotify', toNotify.map(c => CLASS.getNameFromObject(c)))
           const change = new ChangeOfFile(toNotify, f);
           if (this.asyncEventScenario) {
             await this.asyncEventScenario(change);
