@@ -5,8 +5,18 @@ import * as dateformat from "dateformat";
 import * as _ from 'lodash';
 import { Helpers as Base } from 'ng2-logger';
 
-export class Helpers extends Base {
-  public static error(details: any, noExit = false, noTrace = false) {
+export class HelpersIncCompiler extends Base {
+
+  //#region singleton
+  private static _instance: HelpersIncCompiler;
+  public static get Instance() {
+    if (!HelpersIncCompiler._instance) {
+      HelpersIncCompiler._instance = new HelpersIncCompiler();
+    }
+    return HelpersIncCompiler._instance;
+  }
+  //#endregion
+  public error(details: any, noExit = false, noTrace = false) {
     console.error(details)
     //#region @backend
     if (!noExit) {
@@ -15,20 +25,20 @@ export class Helpers extends Base {
     //#endregion
   }
 
-  public static info(details: string) {
+  public info(details: string) {
     console.info(details);
   }
 
-  public static log(details: string) {
+  public log(details: string) {
     console.log(details);
   }
 
-  public static warn(details: string, trace = false) {
+  public warn(details: string, trace = false) {
     console.warn(details);
   }
 
   //#region @backend
-  public static async  runSyncOrAsync(fn: Function, args?: any[]) {
+  public async  runSyncOrAsync(fn: Function, args?: any[]) {
     if (_.isUndefined(fn)) {
       return;
     }
@@ -45,7 +55,7 @@ export class Helpers extends Base {
 
 
   //#region @backend
-  public static async compilationWrapper(fn: () => void, taskName: string = 'Task',
+  public async compilationWrapper(fn: () => void, taskName: string = 'Task',
     executionType: 'Compilation of' | 'Code execution of' | 'Event:' = 'Compilation of') {
     function currentDate() {
       return `[${dateformat(new Date(), 'HH:MM:ss')}]`;
@@ -69,3 +79,5 @@ export class Helpers extends Base {
 
 
 }
+
+export const Helpers = HelpersIncCompiler.Instance;
