@@ -1,7 +1,5 @@
-import * as chokidar from 'chokidar';
 import * as path from 'path';
 import * as _ from 'lodash';
-import * as glob from 'glob';
 import * as fse from 'fs-extra';
 import { CLASS } from 'typescript-class-helpers';
 
