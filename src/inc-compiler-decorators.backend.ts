@@ -87,6 +87,6 @@ export function IncCompilerClass(options: IncCompilerClassOptions) {
       Helpers.warn(`Compiler class "${className}" already has instance.`, false);
     }
     instancesNames.push(className);
-    CLASS.NAME(className, { singleton: 'autoinstance' })(target);
+    CLASS.NAME(className)(target);
   };
 }
