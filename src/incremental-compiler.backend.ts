@@ -19,6 +19,7 @@ export class CompilerManager {
     }
     return this._instance;
   }
+  private constructor() { }
   //#endregion
 
 
@@ -26,56 +27,41 @@ export class CompilerManager {
   private lastAsyncFiles = [];
   private currentObservedFolder = [];
   private clients: BaseClientCompiler[] = [];
-
-  public get allClients() {
-    const that = this;
-    return {
-      get<T = BaseClientCompiler>(clientNameOrClass: string | Function,
-        condition: (c: T) => boolean) {
-        if (_.isUndefined(clientNameOrClass) && _.isUndefined(condition)) {
-          return that.clients;
-        }
-        return clientsBy(clientNameOrClass, condition, that.clients)
-      }
-    }
-  }
   private asyncEventScenario: (event: ChangeOfFile) => Promise<ChangeOfFile>;
   private inited = false;
-
-  public addClient(client: BaseClientCompiler) {
-    const existed = this.clients.find(c => c === client);
-    if (existed) {
-      Helpers.error(`Client "${CLASS.getNameFromObject(client)}" alread added`, false, true);
-    }
-    this.clients.push(client);
-  }
-
-  public async initScenario(
-    onAsyncFileChange?: (event: ChangeOfFile) => Promise<any>) {
-    this.preventAlreadyInited()
-    this.asyncEventScenario = onAsyncFileChange;
-    this.inited = true;
-  }
-
-  public changeExecuted(cange: ChangeOfFile, target: Function) {
-
-  }
 
 
   public async syncInit(client: BaseClientCompiler) {
     // log(`syncInit of ${CLASS.getNameFromObject(client)}`);
-    await client.syncAction(this.syncActionResolvedFiles(client));
+    let files = [];
+    if (_.isArray(client.folderPath) && client.folderPath.length > 0) {
+      files = client.folderPath
+        .reduce((a, b) => {
+          return a.concat(glob.sync(`${b}/**/*.*`, {
+            symlinks: client.followSymlinks
+          }));
+        }, [])
+        .filter(f => {
+          if (client.subscribeOnlyFor.length > 0) {
+            return client.subscribeOnlyFor
+              .includes(path.extname(f).replace('.', '') as Models.FileExtension);
+          }
+          return true;
+        })
+    }
+    await client.syncAction(files);
   }
 
   public async asyncInit(client: BaseClientCompiler) {
-    // log(`asyncInit of ${CLASS.getNameFromObject(client)}`);
+    // Helpers.log(`this.clients: ${this.clients.map(c => CLASS.getNameFromObject(c)).join(',')} `)
+    // Helpers.log(`this.allFoldersToWatch: ${this.allFoldersToWatch}`);
     if (!this.watcher) {
       this.watcher = chokidar.watch(this.allFoldersToWatch, {
         ignoreInitial: true,
-        followSymlinks: true,
+        followSymlinks: false,
         ignorePermissionErrors: true,
       }).on('all', async (event, f) => {
-        if (event !== 'addDir') {
+        if (event !== 'addDir' && event !== 'unlinkDir') {
           if (this.lastAsyncFiles.includes(f)) {
             return;
           } else {
@@ -115,6 +101,35 @@ export class CompilerManager {
     }
   }
 
+  public get allClients() {
+    const that = this;
+    return {
+      get<T = BaseClientCompiler>(clientNameOrClass: string | Function,
+        condition: (c: T) => boolean) {
+        if (_.isUndefined(clientNameOrClass) && _.isUndefined(condition)) {
+          return that.clients;
+        }
+        return clientsBy(clientNameOrClass, condition, that.clients)
+      }
+    }
+  }
+
+  public addClient(client: BaseClientCompiler) {
+    // console.log(`Cilent added ${CLASS.getNameFromObject(client)}`)
+    const existed = this.clients.find(c => c === client);
+    if (existed) {
+      Helpers.error(`Client "${CLASS.getNameFromObject(client)}" alread added`, false, true);
+    }
+    this.clients.push(client);
+  }
+
+  public async initScenario(
+    onAsyncFileChange?: (event: ChangeOfFile) => Promise<any>) {
+    this.preventAlreadyInited()
+    this.asyncEventScenario = onAsyncFileChange;
+    this.inited = true;
+  }
+
   private preventAlreadyInited() {
     if (this.inited) {
       Helpers.error(`Please init Compiler Manager only once:
@@ -123,34 +138,19 @@ export class CompilerManager {
     }
   }
 
-  private constructor() {
-
-  }
-
   private get allFoldersToWatch() {
     const folders: string[] = [];
     this.clients.forEach(c => {
-      if (_.isString(c.folderPath) && !folders.includes(c.folderPath)) {
-        folders.push(c.folderPath);
-      }
-    });
-    return folders;
-  }
-
-
-  private syncActionResolvedFiles(client: BaseClientCompiler) {
-    if (client.folderPath) {
-      return glob.sync(`${client.folderPath}/**/*.*`, {
-        symlinks: false,
-      }).filter(f => {
-        if (client.subscribeOnlyFor.length > 0) {
-          return client.subscribeOnlyFor.includes(path.extname(f).replace('.', '') as Models.FileExtension);
+      // console.log(`c: ${c}`)
+      c.folderPath.forEach(fp => {
+        if (_.isString(fp) && !folders.includes(fp)) {
+          folders.push(fp);
         }
-        return true;
-      })
-    }
-    return [];
+      });
+    });
+    return folders.map(c => `${c}/**/*.*`);
   }
+
 
 }
 

@@ -13,6 +13,7 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
 
   private compilationWrapper = Helpers.compilationWrapper;
   private pathResolve = false;
+  public readonly followSymlinks: boolean;
 
   //#region folder path
   private __folderPath: string[] = [];
@@ -64,6 +65,9 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
     }
     if (_.isNumber(options.watchDepth)) {
       options.watchDepth = Math.abs(options.watchDepth);
+    }
+    if (_.isUndefined(options.followSymlinks)) {
+      options.followSymlinks = false;
     }
     Object.assign(this, options);
   }

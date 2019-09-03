@@ -8,6 +8,7 @@ export namespace Models {
   export interface BaseClientCompilerOptions {
     folderPath?: string | string[];
     watchDepth?: Number;
+    followSymlinks?: boolean;
     executeOutsideScenario?: boolean;
     subscribeOnlyFor?: FileExtension[];
   }
