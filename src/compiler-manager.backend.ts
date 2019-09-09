@@ -55,6 +55,8 @@ export class CompilerManager {
     // Helpers.log(`this.clients: ${this.clients.map(c => CLASS.getNameFromObject(c)).join(',')} `)
     // Helpers.log(`this.allFoldersToWatch: ${this.allFoldersToWatch}`);
     if (!this.watcher) {
+      this.currentObservedFolder = _.cloneDeep(this.allFoldersToWatch);
+      // console.info('FILEESS ADDED TO WATCHER INITT', this.allFoldersToWatch)
       this.watcher = chokidar.watch(this.allFoldersToWatch, {
         ignoreInitial: true,
         followSymlinks: false,
@@ -95,8 +97,20 @@ export class CompilerManager {
           this.lastAsyncFiles = this.lastAsyncFiles.filter(ef => ef !== f);
         }
       });
-    } else if (_.isString(client.folderPath) && !this.currentObservedFolder.includes(client.folderPath)) {
-      this.watcher.add(client.folderPath);
+    } else {
+      if (_.isString(client.folderPath)) {
+        client.folderPath = [client.folderPath];
+      }
+      const newFolders = [];
+      (client.folderPath as string[]).filter(f => {
+        if (!this.currentObservedFolder.includes(f)) {
+          // console.info('FILEESS ADDED TO WATCHER', f)
+          this.watcher.add(f);
+          newFolders.push(f);
+        }
+      });
+      this.currentObservedFolder = this.currentObservedFolder.concat(newFolders);
+
     }
   }
 
@@ -114,7 +128,7 @@ export class CompilerManager {
   }
 
   public addClient(client: BaseClientCompiler) {
-    // console.log(`Cilent added ${CLASS.getNameFromObject(client)}`)
+    // console.log(`Cilent added "${CLASS.getNameFromObject(client)}" folders`, client.folderPath)
     const existed = this.clients.find(c => c === client);
     if (existed) {
       Helpers.error(`Client "${CLASS.getNameFromObject(client)}" alread added`, false, true);
@@ -140,8 +154,9 @@ export class CompilerManager {
   private get allFoldersToWatch() {
     const folders: string[] = [];
     this.clients.forEach(c => {
-      // console.log(`c: ${c}`)
+      // console.log("c.folderPath", c.folderPath)
       c.folderPath.forEach(fp => {
+        // console.log(`fp`, fp)
         if (_.isString(fp) && !folders.includes(fp)) {
           folders.push(fp);
         }
