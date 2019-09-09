@@ -1,12 +1,12 @@
 //#region @backend
-export * from './incremental-compiler.backend';
+export * from './compiler-manager.backend';
 export * from './base-client-compiler.backend';
 export * from './change-of-file.backend';
 
-import * as incCompiler from './incremental-compiler.backend';
+import * as incCompiler from './compiler-manager.backend';
 import * as incBase from './base-client-compiler.backend';
 import * as change from './change-of-file.backend';
-import * as deco from './inc-compiler-decorators.backend';
+import * as deco from './decorators.backend';
 import * as models from './models.backend';
 import { Helpers } from './helpers.backend';
 import * as _ from 'lodash';

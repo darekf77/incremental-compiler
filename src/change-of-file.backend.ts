@@ -1,3 +1,4 @@
+//#region imports
 import * as path from 'path';
 import * as _ from 'lodash';
 import * as glob from 'glob';
@@ -6,16 +7,21 @@ import { CLASS } from 'typescript-class-helpers';
 import { clientsBy } from './helpers.backend';
 import { BaseClientCompiler } from './base-client-compiler.backend';
 import { Models } from './models.backend';
-import { CompilerManager } from './incremental-compiler.backend';
-
-export interface ChangeOfFileCloneOptios {
-  onlyForClient?: BaseClientCompiler[];
-}
-
+import { CompilerManager } from './compiler-manager.backend';
+//#endregion
 
 export class ChangeOfFile {
   public executedFor: BaseClientCompiler[] = [];
   private readonly _clientsForChange: BaseClientCompiler[] = [];
+  public readonly datetime: Date;
+
+  constructor(
+    clientsForChange: BaseClientCompiler[] = [],
+    public readonly fileAbsolutePath: string = void 0,
+  ) {
+    this._clientsForChange = clientsForChange;
+    this.datetime = new Date();
+  }
 
   public get clientsForChange() {
     return this._clientsForChange.filter(f => !this.executedFor.includes(f));
@@ -32,16 +38,6 @@ export class ChangeOfFile {
   public get fileExt(): Models.FileExtension {
     return path.extname(this.fileAbsolutePath).replace('.', '') as Models.FileExtension;
   }
-
-  constructor(
-    clientsForChange: BaseClientCompiler[] = [],
-    public readonly fileAbsolutePath: string = void 0,
-  ) {
-    this._clientsForChange = clientsForChange;
-    this.datetime = new Date();
-  }
-
-  public readonly datetime: Date;
 
   clientsBy<T = BaseClientCompiler>(clientNameOrClass: string | Function,
     condition?: (c: T) => boolean): T[] {

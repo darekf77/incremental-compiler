@@ -1,30 +1,11 @@
+//#region imports
 import chalk from 'chalk';
 import * as dateformat from "dateformat";
 import { BaseClientCompiler } from './base-client-compiler.backend';
 import * as _ from 'lodash';
 import { Helpers as Base } from 'ng2-logger';
-
 import { CLASS } from 'typescript-class-helpers';
-
-export function clientsBy<T = BaseClientCompiler>(clientNameOrClass: string | Function,
-  condition: (c: T) => boolean, clients: BaseClientCompiler[]): T[] {
-  if (_.isFunction(clientNameOrClass)) {
-    clientNameOrClass = CLASS.getName(clientNameOrClass)
-  }
-
-  return clients.filter(cinstance => {
-    const classesOk = (CLASS.getNameFromObject(cinstance) === clientNameOrClass);
-    if (classesOk) {
-      if (_.isFunction(condition)) {
-        return !!condition(cinstance as any);
-      } else {
-        return true;
-      }
-    }
-    return false;
-  }) as any;
-}
-
+//#endregion
 
 export class HelpersIncCompiler extends Base {
 
@@ -92,6 +73,26 @@ export class HelpersIncCompiler extends Base {
     }
   }
 
+}
+
+
+export function clientsBy<T = BaseClientCompiler>(clientNameOrClass: string | Function,
+  condition: (c: T) => boolean, clients: BaseClientCompiler[]): T[] {
+  if (_.isFunction(clientNameOrClass)) {
+    clientNameOrClass = CLASS.getName(clientNameOrClass)
+  }
+
+  return clients.filter(cinstance => {
+    const classesOk = (CLASS.getNameFromObject(cinstance) === clientNameOrClass);
+    if (classesOk) {
+      if (_.isFunction(condition)) {
+        return !!condition(cinstance as any);
+      } else {
+        return true;
+      }
+    }
+    return false;
+  }) as any;
 }
 
 export const Helpers = HelpersIncCompiler.Instance;

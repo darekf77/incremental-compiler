@@ -4,43 +4,21 @@ import * as fse from 'fs-extra';
 import { CLASS } from 'typescript-class-helpers';
 
 import { ChangeOfFile } from './change-of-file.backend';
-import { CompilerManager } from './incremental-compiler.backend';
+import { CompilerManager } from './compiler-manager.backend';
 import { Models } from './models.backend';
 import { Helpers } from './helpers.backend';
 import chalk from 'chalk';
 
 export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA = any> {
 
-  private compilationWrapper = Helpers.compilationWrapper;
-  private pathResolve = false;
   public readonly followSymlinks: boolean;
-
-  //#region folder path
-  private __folderPath: string[] = [];
-  public set folderPath(v) {
-    this.__folderPath = v;
-  }
-  public get folderPath(): string[] {
-    if (!this.pathResolve) {
-      this.pathResolve = true;
-      this.__folderPath.map(p => {
-        if (fse.existsSync(p)) {
-          return path.resolve(p);
-        } else {
-          Helpers.warn(`[BaseClientCompiler] client "${CLASS.getNameFromObject(this)}" folderPath doesn't not exist ${this.folderPath}`)
-          return void 0;
-        }
-      }).filter(f => !!f);
-    }
-    return this.__folderPath;
-  }
-  //#endregion
-
   public readonly subscribeOnlyFor: Models.FileExtension[] = []
   public readonly executeOutsideScenario: boolean;
   public readonly watchDepth: Number;
+  public compilationWrapper = Helpers.compilationWrapper;
+  private pathResolve = false;
+  private __folderPath: string[] = [];
 
-  //#region constructor
   constructor(options?: Models.BaseClientCompilerOptions) {
     if (_.isUndefined(options)) {
       options = {} as any;
@@ -71,9 +49,24 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
     }
     Object.assign(this, options);
   }
-  //#endregion
 
-  //#region init
+  public set folderPath(v) {
+    this.__folderPath = v;
+  }
+  public get folderPath(): string[] {
+    if (!this.pathResolve) {
+      this.pathResolve = true;
+      this.__folderPath.map(p => {
+        if (fse.existsSync(p)) {
+          return path.resolve(p);
+        } else {
+          Helpers.warn(`[BaseClientCompiler] client "${CLASS.getNameFromObject(this)}" folderPath doesn't not exist ${this.folderPath}`)
+          return void 0;
+        }
+      }).filter(f => !!f);
+    }
+    return this.__folderPath;
+  }
 
   private fixTaskName(taskName: string) {
     if (!_.isString(taskName)) {
@@ -82,6 +75,8 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
     return taskName;
   }
 
+
+  //#region start
   /**
    * Do not override this
    */
@@ -94,7 +89,9 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
     }, `${chalk.green('sync action')} for ${taskName}`, 'Event:');
     return this;
   }
+  //#endregion
 
+  //#region start and watch
   /**
    * Do not override this
    */

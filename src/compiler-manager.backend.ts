@@ -1,3 +1,4 @@
+//#region imports
 import * as chokidar from 'chokidar';
 import * as path from 'path';
 import * as _ from 'lodash';
@@ -8,7 +9,7 @@ import { Helpers, clientsBy } from './helpers.backend';
 import { ChangeOfFile } from './change-of-file.backend';
 import { BaseClientCompiler } from './base-client-compiler.backend';
 import { Models } from './models.backend';
-
+//#endregion
 
 export class CompilerManager {
   //#region singleton
@@ -22,14 +23,12 @@ export class CompilerManager {
   private constructor() { }
   //#endregion
 
-
   private watcher: chokidar.FSWatcher;
   private lastAsyncFiles = [];
   private currentObservedFolder = [];
   private clients: BaseClientCompiler[] = [];
   private asyncEventScenario: (event: ChangeOfFile) => Promise<ChangeOfFile>;
   private inited = false;
-
 
   public async syncInit(client: BaseClientCompiler) {
     // log(`syncInit of ${CLASS.getNameFromObject(client)}`);

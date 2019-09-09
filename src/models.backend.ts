@@ -1,3 +1,4 @@
+import { BaseClientCompiler } from './base-client-compiler.backend';
 
 export namespace Models {
 
@@ -12,6 +13,11 @@ export namespace Models {
     executeOutsideScenario?: boolean;
     subscribeOnlyFor?: FileExtension[];
   }
+
+  export interface ChangeOfFileCloneOptios {
+    onlyForClient?: BaseClientCompiler[];
+  }
+
 
 
 }
