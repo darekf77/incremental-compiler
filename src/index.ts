@@ -51,6 +51,7 @@ export namespace IncCompiler {
     incCompiler.CompilerManager.Instance.initScenario(onAsyncChangeOfFile);
     if (_.isObject(helperOverride) && !_.isArray(helperOverride)) {
       Object.keys(helperOverride).forEach(fnName => {
+        // console.log('override name',fnName)
         if (_.isFunction(helperOverride[fnName])) {
           Helpers[fnName] = helperOverride[fnName];
         }
