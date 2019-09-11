@@ -70,7 +70,7 @@ export class CompilerManager {
           }
           // Helpers.log(`event ${event}, path: ${f}`);
           // console.log('this.clients', this.clients.map(c => CLASS.getNameFromObject(c)))
-          const toNotify = this.clients
+          let toNotify = this.clients
             .filter(c => {
               return c.folderPath.find(p => {
                 if (f.startsWith(p)) {
@@ -83,6 +83,9 @@ export class CompilerManager {
                 return false;
               });
             });
+          if (event === 'unlink') {
+            toNotify = toNotify.filter(f => f.notifyOnFileUnlink);
+          }
           // console.log('toNotify', toNotify.map(c => CLASS.getNameFromObject(c)))
           const change = new ChangeOfFile(toNotify, f);
           if (this.asyncEventScenario) {

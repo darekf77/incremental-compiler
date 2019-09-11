@@ -9,12 +9,14 @@ import { Models } from './models.backend';
 import { Helpers } from './helpers.backend';
 import chalk from 'chalk';
 
-export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA = any> {
+export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA = any>
+  implements Models.BaseClientCompilerOptions {
 
   public readonly followSymlinks: boolean;
   public readonly subscribeOnlyFor: Models.FileExtension[] = []
   public readonly executeOutsideScenario: boolean;
   public readonly watchDepth: Number;
+  public readonly notifyOnFileUnlink: boolean;
   public compilationWrapper = Helpers.compilationWrapper;
   private pathResolve = false;
   private __folderPath: string[] = [];
@@ -46,6 +48,9 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
     }
     if (_.isUndefined(options.followSymlinks)) {
       options.followSymlinks = false;
+    }
+    if (_.isUndefined(options.notifyOnFileUnlink)) {
+      options.notifyOnFileUnlink = false;
     }
     Object.assign(this, options);
   }

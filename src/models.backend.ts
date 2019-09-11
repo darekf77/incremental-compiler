@@ -10,6 +10,11 @@ export namespace Models {
     folderPath?: string | string[];
     watchDepth?: Number;
     followSymlinks?: boolean;
+    /**
+     * Notify compiler if file is unlinked
+     * default: false
+     */
+    notifyOnFileUnlink?: boolean;
     executeOutsideScenario?: boolean;
     subscribeOnlyFor?: FileExtension[];
   }
