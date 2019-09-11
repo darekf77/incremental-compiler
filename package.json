@@ -24,7 +24,7 @@
         "typescript-class-helpers"
       ],
       "dependencies": {
-        "incremental-compiler": "0.0.3"
+        "incremental-compiler": "0.0.4"
       }
     },
     "isGenerated": false
