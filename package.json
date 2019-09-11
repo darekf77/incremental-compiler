@@ -23,9 +23,7 @@
         "@types/lodash",
         "typescript-class-helpers"
       ],
-      "dependencies": {
-        "incremental-compiler": "0.0.7"
-      }
+      "dependencies": {}
     },
     "isGenerated": false
   },
