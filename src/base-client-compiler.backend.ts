@@ -89,9 +89,13 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
     : Promise<BaseClientCompiler<RES_ASYNC, RES_SYNC, ADDITIONAL_DATA>> {
     CompilerManager.Instance.addClient(this);
     taskName = this.fixTaskName(taskName)
-    await this.compilationWrapper(async () => {
-      await CompilerManager.Instance.syncInit(this);
-    }, `${chalk.green('sync action')} for ${taskName}`, 'Event:');
+    if (this.folderPath.length > 0) {
+      await this.compilationWrapper(async () => {
+        await CompilerManager.Instance.syncInit(this);
+      }, `${chalk.green('sync action')} for ${taskName}`, 'Event:');
+    } else {
+      Helpers.log(`No action for task: ${taskName}`)
+    }
     return this;
   }
   //#endregion
@@ -103,12 +107,16 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
   public async startAndWatch(taskName?: string, afterInitCallBack?: () => void)
     : Promise<BaseClientCompiler<RES_ASYNC, RES_SYNC, ADDITIONAL_DATA>> {
     taskName = this.fixTaskName(taskName)
-    await this.start(taskName, afterInitCallBack);
-    if (_.isFunction(this.preAsyncAction)) {
-      await this.compilationWrapper(this.preAsyncAction,
-        `${chalk.green('pre-async action')} for ${taskName}`, 'Event:');
+    if (this.folderPath.length > 0) {
+      await this.start(taskName, afterInitCallBack);
+      if (_.isFunction(this.preAsyncAction)) {
+        await this.compilationWrapper(this.preAsyncAction,
+          `${chalk.green('pre-async action')} for ${taskName}`, 'Event:');
+      }
+      await CompilerManager.Instance.asyncInit(this);
+    } else {
+      Helpers.log(`No action for task: ${taskName}`)
     }
-    await CompilerManager.Instance.asyncInit(this);
     return this;
   }
   //#endregion
