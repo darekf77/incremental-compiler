@@ -96,6 +96,9 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
     } else {
       Helpers.log(`No action for task: ${taskName}`)
     }
+    if (_.isFunction(afterInitCallBack)) {
+      afterInitCallBack()
+    }
     return this;
   }
   //#endregion
@@ -110,7 +113,9 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
     if (this.folderPath.length > 0) {
       await this.start(taskName, afterInitCallBack);
       if (_.isFunction(this.preAsyncAction)) {
-        await this.compilationWrapper(this.preAsyncAction,
+        await this.compilationWrapper(async () => {
+          await this.preAsyncAction()
+        },
           `${chalk.green('pre-async action')} for ${taskName}`, 'Event:');
       }
       await CompilerManager.Instance.asyncInit(this);
