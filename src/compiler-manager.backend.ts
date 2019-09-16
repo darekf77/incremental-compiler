@@ -68,7 +68,7 @@ export class CompilerManager {
           } else {
             this.lastAsyncFiles.push(f);
           }
-          // Helpers.log(`event ${event}, path: ${f}`);
+          Helpers.log(`event ${event}, path: ${f}`);
           // console.log('this.clients', this.clients.map(c => CLASS.getNameFromObject(c)))
           let toNotify = this.clients
             .filter(c => {
@@ -91,10 +91,12 @@ export class CompilerManager {
           if (this.asyncEventScenario) {
             await this.asyncEventScenario(change);
           }
-          for (let index = 0; index < change.clientsForChangeFilterExt.length; index++) {
-            const clientOfAsyncAutomaticAction = change.clientsForChangeFilterExt[index];
-            if (clientOfAsyncAutomaticAction.executeOutsideScenario) {
-              await clientOfAsyncAutomaticAction.asyncAction(change);
+          const clients = change.clientsForChangeFilterExt;
+          for (let index = 0; index < clients.length; index++) {
+            const clientAsyncAction = clients[index];
+            // console.log(`execute for "${CLASS.getNameFromObject(clientAsyncAction)}", outside ? ${clientAsyncAction.executeOutsideScenario}`)
+            if (clientAsyncAction.executeOutsideScenario) {
+              await clientAsyncAction.asyncAction(change);
             }
           }
           this.lastAsyncFiles = this.lastAsyncFiles.filter(ef => ef !== f);
