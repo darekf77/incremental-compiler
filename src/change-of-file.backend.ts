@@ -18,6 +18,7 @@ export class ChangeOfFile {
   constructor(
     clientsForChange: BaseClientCompiler[] = [],
     public readonly fileAbsolutePath: string = void 0,
+    public readonly eventName: 'add' | 'change' | 'unlink' = void 0,
   ) {
     this._clientsForChange = clientsForChange;
     this.datetime = new Date();

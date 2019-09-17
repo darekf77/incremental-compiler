@@ -68,7 +68,7 @@ export class CompilerManager {
           } else {
             this.lastAsyncFiles.push(f);
           }
-          Helpers.log(`event ${event}, path: ${f}`);
+          Helpers.log(`[ic] event ${event}, path: ${f}`);
           // console.log('this.clients', this.clients.map(c => CLASS.getNameFromObject(c)))
           let toNotify = this.clients
             .filter(c => {
@@ -87,7 +87,7 @@ export class CompilerManager {
             toNotify = toNotify.filter(f => f.notifyOnFileUnlink);
           }
           // console.log('toNotify', toNotify.map(c => CLASS.getNameFromObject(c)))
-          const change = new ChangeOfFile(toNotify, f);
+          const change = new ChangeOfFile(toNotify, f, event);
           if (this.asyncEventScenario) {
             await this.asyncEventScenario(change);
           }
