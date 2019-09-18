@@ -35,10 +35,14 @@ export class CompilerManager {
     let files = [];
     if (_.isArray(client.folderPath) && client.folderPath.length > 0) {
       files = client.folderPath
-        .reduce((a, b) => {
-          return a.concat(glob.sync(`${b}/**/*.*`, {
-            symlinks: client.followSymlinks
-          }));
+        .reduce((folderOrFileA, folderOrFileB) => {
+          let filesFromB: string[] = [folderOrFileB];
+          if (fse.lstatSync(folderOrFileB).isDirectory()) {
+            filesFromB = glob.sync(`${folderOrFileB}/**/*.*`, {
+              symlinks: client.followSymlinks
+            })
+          }
+          return folderOrFileA.concat(filesFromB);
         }, [])
         .filter(f => {
           if (client.subscribeOnlyFor.length > 0) {
@@ -55,9 +59,9 @@ export class CompilerManager {
     // Helpers.log(`this.clients: ${this.clients.map(c => CLASS.getNameFromObject(c)).join(',')} `)
     // Helpers.log(`this.allFoldersToWatch: ${this.allFoldersToWatch}`);
     if (!this.watcher) {
-      this.currentObservedFolder = _.cloneDeep(this.allFoldersToWatch);
+      this.currentObservedFolder = _.cloneDeep(this.firstFoldersToWatch);
       // console.info('FILEESS ADDED TO WATCHER INITT', this.allFoldersToWatch)
-      this.watcher = chokidar.watch(this.allFoldersToWatch, {
+      this.watcher = chokidar.watch(this.currentObservedFolder, {
         ignoreInitial: true,
         followSymlinks: false,
         ignorePermissionErrors: true,
@@ -106,15 +110,17 @@ export class CompilerManager {
       if (_.isString(client.folderPath)) {
         client.folderPath = [client.folderPath];
       }
-      const newFolders = [];
-      (client.folderPath as string[]).filter(f => {
-        if (!this.currentObservedFolder.includes(f)) {
-          // console.info('FILEESS ADDED TO WATCHER', f)
-          this.watcher.add(f);
-          newFolders.push(f);
-        }
-      });
-      this.currentObservedFolder = this.currentObservedFolder.concat(newFolders);
+      const newFoldersOrFiles = [];
+      (client.folderPath as string[])
+        .map(mapForWatching)
+        .filter(f => {
+          if (!this.currentObservedFolder.includes(f)) {
+            // console.info('FILEESS ADDED TO WATCHER', f)
+            this.watcher.add(f);
+            newFoldersOrFiles.push(f);
+          }
+        });
+      this.currentObservedFolder = this.currentObservedFolder.concat(newFoldersOrFiles);
 
     }
   }
@@ -156,7 +162,7 @@ export class CompilerManager {
     }
   }
 
-  private get allFoldersToWatch() {
+  private get firstFoldersToWatch() {
     const folders: string[] = [];
     this.clients.forEach(c => {
       // console.log("c.folderPath", c.folderPath)
@@ -167,9 +173,15 @@ export class CompilerManager {
         }
       });
     });
-    return folders.map(c => `${c}/**/*.*`);
+    return folders.map(mapForWatching);
   }
 
 
 }
 
+function mapForWatching(c: string) {
+  if (fse.lstatSync(c).isDirectory()) {
+    return `${c}/**/*.*`;
+  }
+  return c;
+}
