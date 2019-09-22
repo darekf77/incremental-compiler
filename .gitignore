@@ -15,6 +15,7 @@
 /npm-debug.log*
 /.sass-cache
 /.sourcemaps
+/tsconfig.json
 /tslint.json
 /.editorconfig
 /index.js
