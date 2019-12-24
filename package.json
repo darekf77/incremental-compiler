@@ -29,7 +29,7 @@
     "isGenerated": false
   },
   "name": "incremental-compiler",
-  "version": "0.0.12",
+  "version": "1.0.1",
   "license": "MIT",
   "main": "index.js",
   "dependencies": {
@@ -43,8 +43,8 @@
     "fs-extra": "^5.0.0",
     "glob": "^7.1.2",
     "lodash": "^4.17.4",
-    "ng2-logger": "3.0.10",
-    "typescript-class-helpers": "0.0.25"
+    "ng2-logger": "3.0.11",
+    "typescript-class-helpers": "1.0.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.900.0-rc.1",
@@ -149,7 +149,7 @@
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~4.2.1",
     "json-stringify-safe": "^5.0.1",
-    "json10": "0.0.19",
+    "json10": "1.0.1",
     "json5": "^0.5.1",
     "karma": "~4.3.0",
     "karma-chrome-launcher": "~3.1.0",
@@ -158,7 +158,7 @@
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.2",
     "lockfile": "^1.0.4",
-    "lodash-walk-object": "0.0.18",
+    "lodash-walk-object": "1.0.1",
     "lowdb": "^1.0.0",
     "material-design-icons": "3.0.1",
     "method-override": "^2.3.10",
@@ -213,7 +213,7 @@
     "tslib": "^1.10.0",
     "tslint": "~5.18.0",
     "typeorm": "0.2.7",
-    "typescript": "~3.7.4",
+    "typescript": "3.7.4",
     "typescript-formatter": "7.2.2",
     "underscore": "^1.9.1",
     "validator": "^9.2.0",
