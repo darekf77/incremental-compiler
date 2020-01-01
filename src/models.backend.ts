@@ -9,6 +9,9 @@ export namespace Models {
   export interface BaseClientCompilerOptions {
     folderPath?: string | string[];
     watchDepth?: Number;
+    /**
+     * default true
+     */
     followSymlinks?: boolean;
     /**
      * Notify compiler if file is unlinked

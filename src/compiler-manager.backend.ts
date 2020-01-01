@@ -63,7 +63,7 @@ export class CompilerManager {
       // console.info('FILEESS ADDED TO WATCHER INITT', this.allFoldersToWatch)
       this.watcher = chokidar.watch(this.currentObservedFolder, {
         ignoreInitial: true,
-        followSymlinks: false,
+        followSymlinks: client.followSymlinks,
         ignorePermissionErrors: true,
       }).on('all', async (event, f) => {
         if (event !== 'addDir' && event !== 'unlinkDir') {
