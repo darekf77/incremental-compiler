@@ -52,6 +52,7 @@ export class CompilerManager {
           return true;
         })
     }
+    // console.log(`Files for client.folderPath: ${client.folderPath}  client.followSymlinks: ${client.followSymlinks}`)
     await client.syncAction(files);
   }
 
