@@ -6,7 +6,7 @@ import * as fse from 'fs-extra';
 import { CLASS } from 'typescript-class-helpers';
 import { clientsBy } from './helpers.backend';
 import { BaseClientCompiler } from './base-client-compiler.backend';
-import { Models } from './models.backend';
+import { Models } from './models';
 import { CompilerManager } from './compiler-manager.backend';
 //#endregion
 

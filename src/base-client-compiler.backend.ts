@@ -5,7 +5,7 @@ import { CLASS } from 'typescript-class-helpers';
 
 import { ChangeOfFile } from './change-of-file.backend';
 import { CompilerManager } from './compiler-manager.backend';
-import { Models } from './models.backend';
+import { Models } from './models';
 import { Helpers } from './helpers.backend';
 import chalk from 'chalk';
 
@@ -97,7 +97,7 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
       Helpers.log(`No action for task: ${taskName}`)
     }
     if (_.isFunction(afterInitCallBack)) {
-      afterInitCallBack()
+      await Helpers.runSyncOrAsync(afterInitCallBack);
     }
     return this;
   }
@@ -107,11 +107,17 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
   /**
    * Do not override this
    */
-  public async startAndWatch(taskName?: string, afterInitCallBack?: () => void)
+  public async startAndWatch(taskName?: string, options?: Models.StartAndWatchOptions)
     : Promise<BaseClientCompiler<RES_ASYNC, RES_SYNC, ADDITIONAL_DATA>> {
+    const { watchOnly, afterInitCallBack } = options || {};
+
     taskName = this.fixTaskName(taskName)
     if (this.folderPath.length > 0) {
-      await this.start(taskName, afterInitCallBack);
+      if (watchOnly) {
+        console.log(chalk.gray(`[incremental-compiler] Watch mode only for "${taskName}"`));
+      } else {
+        await this.start(taskName, afterInitCallBack);
+      }
       if (_.isFunction(this.preAsyncAction)) {
         await this.compilationWrapper(async () => {
           await this.preAsyncAction()

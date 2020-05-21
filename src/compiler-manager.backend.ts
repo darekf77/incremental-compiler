@@ -8,7 +8,7 @@ import { CLASS } from 'typescript-class-helpers';
 import { Helpers, clientsBy } from './helpers.backend';
 import { ChangeOfFile } from './change-of-file.backend';
 import { BaseClientCompiler } from './base-client-compiler.backend';
-import { Models } from './models.backend';
+import { Models } from './models';
 //#endregion
 
 export class CompilerManager {

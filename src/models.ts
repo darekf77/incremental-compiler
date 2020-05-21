@@ -1,6 +1,13 @@
+//#region @backend
 import { BaseClientCompiler } from './base-client-compiler.backend';
+//#endregion
 
 export namespace Models {
+
+  export interface StartAndWatchOptions {
+    afterInitCallBack?: () => void;
+    watchOnly?: boolean;
+  }
 
   export type CutableFileExt = 'scss' | 'css' | 'sass' | 'html' | 'ts';
 
@@ -22,9 +29,11 @@ export namespace Models {
     subscribeOnlyFor?: FileExtension[];
   }
 
+  //#region @backend
   export interface ChangeOfFileCloneOptios {
     onlyForClient?: BaseClientCompiler[];
   }
+  //#endregion
 
 
 
