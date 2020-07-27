@@ -27,7 +27,12 @@
       "dependencies": {}
     },
     "isGenerated": false,
-    "linkedProjects": []
+    "linkedProjects": [],
+    "libReleaseOptions": {
+      "nodts": false,
+      "obscure": false,
+      "ugly": false
+    }
   },
   "name": "incremental-compiler",
   "version": "1.1.5",
