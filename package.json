@@ -24,7 +24,8 @@
         "@types/lodash",
         "typescript-class-helpers"
       ],
-      "dependencies": {}
+      "dependencies": {},
+      "linkedFolders": []
     },
     "isGenerated": false,
     "linkedProjects": [],
