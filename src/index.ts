@@ -1,4 +1,9 @@
 import * as models from './models';
+import { FORMLY_CONFIG } from '@ngx-formly/core';
+const a = FORMLY_CONFIG;
+
+console.log(a);
+
 //#region @backend
 export * from './compiler-manager.backend';
 export * from './base-client-compiler.backend';
