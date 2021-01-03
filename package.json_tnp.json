@@ -32,5 +32,8 @@
     "nodts": false,
     "obscure": false,
     "ugly": false
-  }
+  },
+  "license": "MIT",
+  "private": false,
+  "main": "index.js"
 }
