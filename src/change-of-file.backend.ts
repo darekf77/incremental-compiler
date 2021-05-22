@@ -2,7 +2,6 @@
 import { path, _ } from 'tnp-core';
 import { clientsBy } from './helpers.backend';
 import { BaseClientCompiler } from './base-client-compiler.backend';
-import { Models } from './models';
 import { ConfigModels } from 'tnp-config';
 //#endregion
 

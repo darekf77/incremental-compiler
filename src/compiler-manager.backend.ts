@@ -1,8 +1,5 @@
 //#region imports
-import * as chokidar from 'chokidar';
-import { path, _ } from 'tnp-core';
-import * as glob from 'glob';
-import * as fse from 'fs-extra';
+import { path, _, chokidar, glob, fse } from 'tnp-core';
 import { CLASS } from 'typescript-class-helpers';
 import { Helpers, clientsBy } from './helpers.backend';
 import { ChangeOfFile } from './change-of-file.backend';
