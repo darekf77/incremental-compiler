@@ -1,8 +1,8 @@
 //#region imports
-import chalk from 'chalk';
+import { CLI } from 'tnp-cli';
 import * as dateformat from 'dateformat';
 import { BaseClientCompiler } from './base-client-compiler.backend';
-import * as _ from 'lodash';
+import { _ } from 'tnp-core';
 import { Helpers as Base } from 'ng2-logger';
 import { CLASS } from 'typescript-class-helpers';
 //#endregion
@@ -67,7 +67,7 @@ export class HelpersIncCompiler extends Base {
       await Helpers.runSyncOrAsync(fn)
       Helpers.log(`${currentDate()} ${executionType} "${taskName}" Done\u2713`)
     } catch (error) {
-      Helpers.log(chalk.red(error));
+      Helpers.log(CLI.chalk.red(error));
       Helpers.log(`${currentDate()} ${executionType} ${taskName} ERROR`);
       process.exit(1);
     }

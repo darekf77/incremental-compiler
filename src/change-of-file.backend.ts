@@ -1,13 +1,9 @@
 //#region imports
-import * as path from 'path';
-import * as _ from 'lodash';
-import * as glob from 'glob';
-import * as fse from 'fs-extra';
-import { CLASS } from 'typescript-class-helpers';
+import { path, _ } from 'tnp-core';
 import { clientsBy } from './helpers.backend';
 import { BaseClientCompiler } from './base-client-compiler.backend';
 import { Models } from './models';
-import { CompilerManager } from './compiler-manager.backend';
+import { ConfigModels } from 'tnp-config';
 //#endregion
 
 export class ChangeOfFile {
@@ -36,8 +32,8 @@ export class ChangeOfFile {
       return f.subscribeOnlyFor.includes(this.fileExt);
     });
   }
-  public get fileExt(): Models.FileExtension {
-    return path.extname(this.fileAbsolutePath).replace('.', '') as Models.FileExtension;
+  public get fileExt(): ConfigModels.FileExtension {
+    return path.extname(this.fileAbsolutePath).replace('.', '') as ConfigModels.FileExtension;
   }
 
   clientsBy<T = BaseClientCompiler>(clientNameOrClass: string | Function,

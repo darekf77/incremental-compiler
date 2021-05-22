@@ -1,6 +1,6 @@
 //#region imports
 import { CLASS } from 'typescript-class-helpers';
-import * as _ from 'lodash';
+import { _ } from 'tnp-core';
 import { ChangeOfFile } from './change-of-file.backend';
 import { Helpers } from './helpers.backend';
 //#endregion

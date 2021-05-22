@@ -1,14 +1,13 @@
 //#region imports
 import * as chokidar from 'chokidar';
-import * as path from 'path';
-import * as _ from 'lodash';
+import { path, _ } from 'tnp-core';
 import * as glob from 'glob';
 import * as fse from 'fs-extra';
 import { CLASS } from 'typescript-class-helpers';
 import { Helpers, clientsBy } from './helpers.backend';
 import { ChangeOfFile } from './change-of-file.backend';
 import { BaseClientCompiler } from './base-client-compiler.backend';
-import { Models } from './models';
+import { ConfigModels } from 'tnp-config';
 //#endregion
 
 export class CompilerManager {
@@ -47,7 +46,7 @@ export class CompilerManager {
         .filter(f => {
           if (client.subscribeOnlyFor.length > 0) {
             return client.subscribeOnlyFor
-              .includes(path.extname(f).replace('.', '') as Models.FileExtension);
+              .includes(path.extname(f).replace('.', '') as ConfigModels.FileExtension);
           }
           return true;
         })

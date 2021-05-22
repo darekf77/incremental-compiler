@@ -1,6 +1,7 @@
 //#region @backend
 import { BaseClientCompiler } from './base-client-compiler.backend';
 //#endregion
+import { ConfigModels } from 'tnp-config';
 
 export namespace Models {
 
@@ -9,9 +10,7 @@ export namespace Models {
     watchOnly?: boolean;
   }
 
-  export type CutableFileExt = 'scss' | 'css' | 'sass' | 'html' | 'ts';
 
-  export type FileExtension = 'ts' | 'js' | 'json' | 'html' | 'jpg' | 'png' | 'txt' | CutableFileExt;
 
   export interface BaseClientCompilerOptions {
     folderPath?: string | string[];
@@ -26,7 +25,7 @@ export namespace Models {
      */
     notifyOnFileUnlink?: boolean;
     executeOutsideScenario?: boolean;
-    subscribeOnlyFor?: FileExtension[];
+    subscribeOnlyFor?: ConfigModels.FileExtension[];
   }
 
   //#region @backend

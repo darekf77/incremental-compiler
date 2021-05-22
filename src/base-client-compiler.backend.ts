@@ -1,19 +1,18 @@
-import * as path from 'path';
-import * as _ from 'lodash';
-import * as fse from 'fs-extra';
+import { path, fse, _ } from 'tnp-core';
 import { CLASS } from 'typescript-class-helpers';
 
 import { ChangeOfFile } from './change-of-file.backend';
 import { CompilerManager } from './compiler-manager.backend';
 import { Models } from './models';
 import { Helpers } from './helpers.backend';
-import chalk from 'chalk';
+import { CLI } from 'tnp-cli';
+import { ConfigModels } from 'tnp-config';
 
 export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA = any>
   implements Models.BaseClientCompilerOptions {
 
   public readonly followSymlinks: boolean;
-  public readonly subscribeOnlyFor: Models.FileExtension[] = []
+  public readonly subscribeOnlyFor: ConfigModels.FileExtension[] = []
   public readonly executeOutsideScenario: boolean;
   public readonly watchDepth: Number;
   public readonly notifyOnFileUnlink: boolean;
@@ -92,7 +91,7 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
     if (this.folderPath.length > 0) {
       await this.compilationWrapper(async () => {
         await CompilerManager.Instance.syncInit(this);
-      }, `${chalk.green('sync action')} for ${taskName}`, 'Event:');
+      }, `${CLI.chalk.green('sync action')} for ${taskName}`, 'Event:');
     } else {
       Helpers.log(`No action for task: ${taskName}`)
     }
@@ -114,7 +113,7 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
     taskName = this.fixTaskName(taskName)
     if (this.folderPath.length > 0) {
       if (watchOnly) {
-        console.log(chalk.gray(`[incremental-compiler] Watch mode only for "${taskName}"`));
+        console.log(CLI.chalk.gray(`[incremental-compiler] Watch mode only for "${taskName}"`));
       } else {
         await this.start(taskName, afterInitCallBack);
       }
@@ -122,7 +121,7 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
         await this.compilationWrapper(async () => {
           await this.preAsyncAction()
         },
-          `${chalk.green('pre-async action')} for ${taskName}`, 'Event:');
+          `${CLI.chalk.green('pre-async action')} for ${taskName}`, 'Event:');
       }
       await CompilerManager.Instance.asyncInit(this);
     } else {

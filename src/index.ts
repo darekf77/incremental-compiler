@@ -9,7 +9,7 @@ import * as incBase from './base-client-compiler.backend';
 import * as change from './change-of-file.backend';
 import * as deco from './decorators.backend';
 import { Helpers } from './helpers.backend';
-import * as _ from 'lodash';
+import { _ } from 'tnp-core';
 import { CLASS } from 'typescript-class-helpers';
 
 export interface HelpersToOverride {
