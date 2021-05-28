@@ -1,7 +1,8 @@
 //#region imports
-import { path, _, chokidar, glob, fse } from 'tnp-core';
+import { path, _, chokidar, glob, fse, crossPlatformPath } from 'tnp-core';
 import { CLASS } from 'typescript-class-helpers';
-import { Helpers, clientsBy } from './helpers.backend';
+import { clientsBy } from './helpers.backend';
+import { Helpers } from 'tnp-core';
 import { ChangeOfFile } from './change-of-file.backend';
 import { BaseClientCompiler } from './base-client-compiler.backend';
 import { ConfigModels } from 'tnp-config';
@@ -63,6 +64,7 @@ export class CompilerManager {
         followSymlinks: client.followSymlinks,
         ignorePermissionErrors: true,
       }).on('all', async (event, f) => {
+        f = crossPlatformPath(f);
         if (event !== 'addDir' && event !== 'unlinkDir') {
           if (this.lastAsyncFiles.includes(f)) {
             return;

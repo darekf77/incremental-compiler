@@ -8,7 +8,7 @@ import * as incCompiler from './compiler-manager.backend';
 import * as incBase from './base-client-compiler.backend';
 import * as change from './change-of-file.backend';
 import * as deco from './decorators.backend';
-import { Helpers } from './helpers.backend';
+import { Helpers } from 'tnp-core';
 import { _ } from 'tnp-core';
 import { CLASS } from 'typescript-class-helpers';
 

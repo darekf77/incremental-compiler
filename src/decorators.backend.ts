@@ -2,7 +2,7 @@
 import { CLASS } from 'typescript-class-helpers';
 import { _ } from 'tnp-core';
 import { ChangeOfFile } from './change-of-file.backend';
-import { Helpers } from './helpers.backend';
+import { Helpers } from 'tnp-core';
 //#endregion
 
 export function AsyncAction() {

@@ -1,10 +1,10 @@
-import { path, fse, _ } from 'tnp-core';
+import { path, fse, _, crossPlatformPath } from 'tnp-core';
 import { CLASS } from 'typescript-class-helpers';
 
 import { ChangeOfFile } from './change-of-file.backend';
 import { CompilerManager } from './compiler-manager.backend';
 import { Models } from './models';
-import { Helpers } from './helpers.backend';
+import { Helpers } from 'tnp-core';
 import { CLI } from 'tnp-cli';
 import { ConfigModels } from 'tnp-config';
 
@@ -62,7 +62,7 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
       this.pathResolve = true;
       this.__folderPath.map(p => {
         if (fse.existsSync(p)) {
-          return path.resolve(p);
+          return crossPlatformPath(path.resolve(p));
         } else {
           Helpers.warn(`[BaseClientCompiler] client "${CLASS.getNameFromObject(this)}" folderPath doesn't not exist ${this.folderPath}`)
           return void 0;
