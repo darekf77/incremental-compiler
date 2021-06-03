@@ -165,7 +165,7 @@
     "http-proxy": "^1.16.2",
     "http-proxy-middleware": "0.19.1",
     "http-server": "0.11.1",
-    "incremental-compiler": "~1.1.28",
+    "incremental-compiler": "~1.1.29",
     "inquirer": "~7.3.3",
     "inquirer-autocomplete-prompt": "~1.3.0",
     "is-elevated": "~3.0.0",
@@ -282,5 +282,5 @@
       "pre-push": "tnp deps:show:if:standalone"
     }
   },
-  "lastBuildTagHash": "2a0a01c00649c0b9a073a57b70df3bd21dad9e5a\n2a0a01c00649c0b9a073a57b70df3bd21dad9e5a"
+  "lastBuildTagHash": "91dec1c0ba9ce86b1806880d96ae9c7d9c79aeea"
 }
