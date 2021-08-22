@@ -36,7 +36,7 @@
     "main": "index.js"
   },
   "name": "incremental-compiler",
-  "version": "1.1.37",
+  "version": "1.1.38",
   "license": "MIT",
   "main": "index.js",
   "dependencies": {
@@ -251,7 +251,7 @@
     "task.js": "0.1.5",
     "tnp-cli": "~0.0.17",
     "tnp-config": "~0.0.69",
-    "tnp-core": "~0.0.40",
+    "tnp-core": "~0.0.47",
     "tnp-db": "~0.0.27",
     "tnp-helpers": "~0.0.37",
     "tnp-models": "~0.0.28",
