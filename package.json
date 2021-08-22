@@ -36,7 +36,7 @@
     "main": "index.js"
   },
   "name": "incremental-compiler",
-  "version": "1.1.36",
+  "version": "1.1.37",
   "license": "MIT",
   "main": "index.js",
   "dependencies": {
