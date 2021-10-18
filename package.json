@@ -159,7 +159,7 @@
     "http-proxy": "1.16.2",
     "http-proxy-middleware": "0.19.1",
     "http-server": "0.11.1",
-    "incremental-compiler": "~1.1.48",
+    "incremental-compiler": "~1.1.49",
     "inquirer": "7.3.3",
     "inquirer-autocomplete-prompt": "1.3.0",
     "is-elevated": "3.0.0",
@@ -267,5 +267,5 @@
     "zone.js": "0.10.2"
   },
   "private": false,
-  "lastBuildTagHash": "0ad5a8e8da781b6a1e9c38c21c712c097e8d6862"
+  "lastBuildTagHash": "a483007a4ffa0b55ef6dae6769ae0feb89927082"
 }
