@@ -2,13 +2,6 @@
   "resources": [
     "README.md"
   ],
-  "isCoreProject": false,
-  "useFramework": false,
-  "type": "isomorphic-lib",
-  "version": "v3",
-  "additionalNpmNames": [
-    "firedev-incremental-watcher"
-  ],
   "overrided": {
     "ignoreDepsPattern": [],
     "includeAsDev": "*",
@@ -26,15 +19,22 @@
     "dependencies": {},
     "linkedFolders": []
   },
-  "isGenerated": false,
   "linkedProjects": [],
   "libReleaseOptions": {
     "nodts": false,
     "obscure": false,
     "ugly": false
   },
+  "isCoreProject": false,
+  "useFramework": false,
+  "type": "isomorphic-lib",
+  "version": "v3",
+  "isGenerated": false,
   "license": "MIT",
   "private": false,
   "main": "index.js",
-  "workerPlugins": {}
+  "workerPlugins": {},
+  "additionalNpmNames": [
+    "firedev-incremental-watcher"
+  ]
 }
