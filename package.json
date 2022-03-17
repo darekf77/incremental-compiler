@@ -15,5 +15,6 @@
   },
   "private": false,
   "lastBuildTagHash": "061a32087bc3a4a42edb4f4a068dedc080660b0a",
-  "main": "index.js"
+  "main": "index.js",
+  "devDependencies": {}
 }
