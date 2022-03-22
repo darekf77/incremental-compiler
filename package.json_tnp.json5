@@ -25,9 +25,9 @@
     "obscure": false,
     "ugly": false
   },
+  "type": "isomorphic-lib",
   "isCoreProject": false,
   "useFramework": false,
-  "type": "isomorphic-lib",
   "version": "v3",
   "isGenerated": false,
   "license": "MIT",
