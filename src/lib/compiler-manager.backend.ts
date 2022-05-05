@@ -55,7 +55,7 @@ export class CompilerManager {
 
   public async asyncInit(client: BaseClientCompiler) {
     // Helpers.log(`this.clients: ${this.clients.map(c => CLASS.getNameFromObject(c)).join(',')} `)
-    // Helpers.log(`this.allFoldersToWatch: ${this.allFoldersToWatch}`);
+    // Helpers.log(`this.firstFoldersToWatch: ${this.firstFoldersToWatch}`);
     if (!this.watcher) {
       this.currentObservedFolder = _.cloneDeep(this.firstFoldersToWatch);
       // console.info('FILEESS ADDED TO WATCHER INITT', this.allFoldersToWatch)
@@ -65,26 +65,32 @@ export class CompilerManager {
         ignorePermissionErrors: true,
       }).on('all', async (event, f) => {
         f = crossPlatformPath(f);
+        // Helpers.log(`[ic] event ${event}, path: ${f}`);
+        // console.log('this.clients', this.clients.map(c => CLASS.getNameFromObject(c)))
+
         if (event !== 'addDir' && event !== 'unlinkDir') {
           if (this.lastAsyncFiles.includes(f)) {
             return;
           } else {
             this.lastAsyncFiles.push(f);
           }
-          Helpers.log(`[ic] event ${event}, path: ${f}`);
+          Helpers.log(`[ic] event ${event}, path: ${f}`,1);
           // console.log('this.clients', this.clients.map(c => CLASS.getNameFromObject(c)))
           let toNotify = this.clients
             .filter(c => {
-              return c.folderPath.find(p => {
-                if (f.startsWith(p)) {
-                  if (c.watchDepth === Number.POSITIVE_INFINITY) {
-                    return true;
+              return c.folderPath
+                .map(p => crossPlatformPath(p))
+                .find(p => {
+                  // console.log('folderPath p:', p)
+                  if (f.startsWith(p)) {
+                    if (c.watchDepth === Number.POSITIVE_INFINITY) {
+                      return true;
+                    }
+                    const r = f.replace(p, '').replace(/^\//, '').split('/').length - 1;
+                    return r <= c.watchDepth;
                   }
-                  const r = f.replace(p, '').replace(/^\//, '').split('/').length - 1;
-                  return r <= c.watchDepth;
-                }
-                return false;
-              });
+                  return false;
+                });
             });
           if (event === 'unlink') {
             toNotify = toNotify.filter(f => f.notifyOnFileUnlink);
