@@ -21,8 +21,8 @@ export class CompilerManager {
   //#endregion
 
   private watcher: chokidar.FSWatcher;
-  private lastAsyncFiles = [];
-  private currentObservedFolder = [];
+  private lastAsyncFiles: string[] = [];
+  private currentObservedFolder: string[] = [];
   private clients: BaseClientCompiler[] = [];
   private asyncEventScenario: (event: ChangeOfFile) => Promise<ChangeOfFile>;
   private inited = false;
@@ -57,24 +57,24 @@ export class CompilerManager {
     // Helpers.log(`this.clients: ${this.clients.map(c => CLASS.getNameFromObject(c)).join(',')} `)
     // Helpers.log(`this.firstFoldersToWatch: ${this.firstFoldersToWatch}`);
     if (!this.watcher) {
-      this.currentObservedFolder = _.cloneDeep(this.firstFoldersToWatch);
-      // console.info('FILEESS ADDED TO WATCHER INITT', this.allFoldersToWatch)
+      this.currentObservedFolder = _.cloneDeep(this.filesToWatch);
+      // console.info('FILEESS ADDED TO WATCHER INITT', this.currentObservedFolder)
       this.watcher = chokidar.watch(this.currentObservedFolder, {
         ignoreInitial: true,
         followSymlinks: client.followSymlinks,
         ignorePermissionErrors: true,
       }).on('all', async (event, f) => {
         f = crossPlatformPath(f);
-        // Helpers.log(`[ic] event ${event}, path: ${f}`);
+        // console.log(`[ic] event ${event}, path: ${f}`);
         // console.log('this.clients', this.clients.map(c => CLASS.getNameFromObject(c)))
 
-        if (event !== 'addDir' && event !== 'unlinkDir') {
+        if (event !== 'addDir') {
           if (this.lastAsyncFiles.includes(f)) {
             return;
           } else {
             this.lastAsyncFiles.push(f);
           }
-          Helpers.log(`[ic] event ${event}, path: ${f}`,1);
+          // Helpers.log(`[ic] event ${event}, path: ${f}`, 1);
           // console.log('this.clients', this.clients.map(c => CLASS.getNameFromObject(c)))
           let toNotify = this.clients
             .filter(c => {
@@ -118,6 +118,9 @@ export class CompilerManager {
       const newFoldersOrFiles = [];
       (client.folderPath as string[])
         .map(mapForWatching)
+        .reduce((a, b) => {
+          return a.concat(b);
+        }, [])
         .filter(f => {
           if (!this.currentObservedFolder.includes(f)) {
             // console.info('FILEESS ADDED TO WATCHER', f)
@@ -167,26 +170,27 @@ export class CompilerManager {
     }
   }
 
-  private get firstFoldersToWatch() {
+  private get filesToWatch() {
     const folders: string[] = [];
     this.clients.forEach(c => {
       // console.log("c.folderPath", c.folderPath)
       c.folderPath.forEach(fp => {
         // console.log(`fp`, fp)
         if (_.isString(fp) && !folders.includes(fp)) {
-          folders.push(fp);
+          const mapped = mapForWatching(fp);
+          folders.push(...mapped);
         }
       });
     });
-    return folders.map(mapForWatching);
+    return folders
   }
 
 
 }
 
-function mapForWatching(c: string) {
+function mapForWatching(c: string): string[] {
   if (fse.lstatSync(c).isDirectory()) {
-    return `${c}/**/*.*`;
+    return [c, `${c}/**/*.*`];
   }
-  return c;
+  return [c];
 }
