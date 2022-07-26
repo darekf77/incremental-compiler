@@ -15,6 +15,7 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
   public readonly subscribeOnlyFor: ConfigModels.FileExtension[] = []
   public readonly executeOutsideScenario: boolean;
   public readonly watchDepth: Number;
+  public ignoreFolderPatter?: string[];
   public readonly notifyOnFileUnlink: boolean;
   public compilationWrapper = Helpers.compilationWrapper;
   private pathResolve = false;
@@ -32,6 +33,9 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
     }
     if (_.isUndefined(options.folderPath)) {
       options.folderPath = [];
+    }
+    if (_.isUndefined(options.ignoreFolderPatter)) {
+      options.ignoreFolderPatter = [];
     }
     if (_.isString(options.folderPath)) {
       options.folderPath = [options.folderPath];
