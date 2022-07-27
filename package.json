@@ -1,6 +1,6 @@
 {
   "name": "incremental-compiler",
-  "version": "13.0.22",
+  "version": "13.0.23",
   "license": "MIT",
   "dependencies": {
     "@types/chokidar": "2.1.3",
