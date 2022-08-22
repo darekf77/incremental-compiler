@@ -92,13 +92,10 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
     : Promise<BaseClientCompiler<RES_ASYNC, RES_SYNC, ADDITIONAL_DATA>> {
     CompilerManager.Instance.addClient(this);
     taskName = this.fixTaskName(taskName)
-    if (this.folderPath.length > 0) {
-      await this.compilationWrapper(async () => {
-        await CompilerManager.Instance.syncInit(this);
-      }, `${CLI.chalk.green('sync action')} for ${taskName}`, 'Event:');
-    } else {
-      Helpers.log(`No action for task: ${taskName}`)
-    }
+    await this.compilationWrapper(async () => {
+      await CompilerManager.Instance.syncInit(this);
+    }, `${CLI.chalk.green('sync action')} for ${taskName}`, 'Event:');
+
     if (_.isFunction(afterInitCallBack)) {
       await Helpers.runSyncOrAsync(afterInitCallBack);
     }
@@ -129,7 +126,8 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
       }
       await CompilerManager.Instance.asyncInit(this);
     } else {
-      Helpers.log(`No action for task: ${taskName}`)
+      Helpers.log(`No action for task: ${taskName}.. starting task`);
+      await this.start(taskName, afterInitCallBack);
     }
     return this;
   }
