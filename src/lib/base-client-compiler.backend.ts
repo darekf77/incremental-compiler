@@ -16,6 +16,7 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
   public readonly executeOutsideScenario: boolean;
   public readonly watchDepth: Number;
   public ignoreFolderPatter?: string[];
+  public allowedOnlyFileExt?: string[];
   public readonly notifyOnFileUnlink: boolean;
   public compilationWrapper = Helpers.compilationWrapper;
   private pathResolve = false;

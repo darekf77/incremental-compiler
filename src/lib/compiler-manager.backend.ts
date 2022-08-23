@@ -59,6 +59,13 @@ export class CompilerManager {
     if (!this.watcher) {
       this.currentObservedFolder = _.cloneDeep(this.filesToWatch);
       // console.info('FILEESS ADDED TO WATCHER INITT', this.currentObservedFolder)
+      const allowedExtEnable = Array.isArray(client.allowedOnlyFileExt) && client.allowedOnlyFileExt.length > 0;
+      const allowedExt = !allowedExtEnable ? [] : (client.allowedOnlyFileExt || []).map(ext => {
+        if (ext.startsWith('.')) {
+          return ext;
+        }
+        return `.${ext}`;
+      })
 
       this.watcher = chokidar.watch(this.currentObservedFolder, {
         ignoreInitial: true,
@@ -66,10 +73,12 @@ export class CompilerManager {
         ignorePermissionErrors: true,
       }).on('all', async (event, f) => {
         f = crossPlatformPath(f);
-        if ((event !== 'addDir') && ![
-          "node_modules",
-          ...client.ignoreFolderPatter
-        ].some(s => f.includes(s))) {
+
+        if (
+          (event !== 'addDir')
+          && !["node_modules", ...client.ignoreFolderPatter].some(s => f.includes(s))
+          && (!allowedExtEnable ? true : allowedExt.includes(path.extname(f)))
+        ) {
 
           if (this.lastAsyncFiles.includes(f)) {
             return;

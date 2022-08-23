@@ -24,7 +24,8 @@ export namespace Models {
      * default: false
      */
     notifyOnFileUnlink?: boolean;
-    ignoreFolderPatter?: string[]
+    ignoreFolderPatter?: string[];
+    allowedOnlyFileExt?: string[];
     executeOutsideScenario?: boolean;
     subscribeOnlyFor?: ConfigModels.FileExtension[];
   }
