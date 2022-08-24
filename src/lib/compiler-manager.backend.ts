@@ -65,7 +65,12 @@ export class CompilerManager {
           return ext;
         }
         return `.${ext}`;
-      })
+      });
+
+      const addionalAllowedEnable = Array.isArray(client.additionallyAllowedFilesWithNames)
+        && client.additionallyAllowedFilesWithNames.length > 0;
+
+      const addionalAllowed = !addionalAllowedEnable ? [] : (client.additionallyAllowedFilesWithNames || []);
 
       this.watcher = chokidar.watch(this.currentObservedFolder, {
         ignoreInitial: true,
@@ -77,7 +82,11 @@ export class CompilerManager {
         if (
           (event !== 'addDir')
           && !["node_modules", ...client.ignoreFolderPatter].some(s => f.includes(s))
-          && (!allowedExtEnable ? true : allowedExt.includes(path.extname(f)))
+          && (
+            (!allowedExtEnable ? true : allowedExt.includes(path.extname(f)))
+            ||
+            (addionalAllowedEnable && addionalAllowed.includes(path.basename(f)))
+          )
         ) {
 
           if (this.lastAsyncFiles.includes(f)) {
