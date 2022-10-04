@@ -2,6 +2,7 @@
   "resources": [
     "README.md"
   ],
+
   "overrided": {
     "ignoreDepsPattern": [],
     "includeAsDev": [],
@@ -19,12 +20,16 @@
     "dependencies": {},
     "linkedFolders": []
   },
+
   "linkedProjects": [],
+  'linkedRepos': [],
+
   "libReleaseOptions": {
     "nodts": false,
     "obscure": false,
     "ugly": false
   },
+
   "type": "isomorphic-lib",
   "isCoreProject": false,
   "useFramework": false,
@@ -34,7 +39,8 @@
   "private": false,
   "main": "index.js",
   "workerPlugins": {},
+
   "additionalNpmNames": [
     "firedev-incremental-watcher"
-  ]
+  ],
 }
