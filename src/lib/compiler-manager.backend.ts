@@ -6,10 +6,14 @@ import { Helpers } from 'tnp-core';
 import { ChangeOfFile } from './change-of-file.backend';
 import { BaseClientCompiler } from './base-client-compiler.backend';
 import { ConfigModels } from 'tnp-config';
+//#region for debugging purpose
+// require('colors');
+// const Diff = require('diff');
+//#endregion
 //#endregion
 
 export class CompilerManager {
-  //#region singleton
+  //#region static
   private static _instance: CompilerManager;
   public static get Instance() {
     if (!this._instance) {
@@ -17,16 +21,56 @@ export class CompilerManager {
     }
     return this._instance;
   }
-  private constructor() { }
   //#endregion
 
-  private watcher: chokidar.FSWatcher;
+  //#region getters
+  private filesToWatch(client: BaseClientCompiler) {
+    const folders: string[] = [];
+    // this.clients.forEach(c => {
+    [client].forEach(c => {
+      // console.log("c.folderPath", c.folderPath)
+      c.folderPath.forEach(fp => {
+        // console.log(`fp`, fp)
+        if (_.isString(fp) && !folders.includes(fp)) {
+          const mapped = mapForWatching(fp);
+          folders.push(...mapped);
+        }
+      });
+    });
+    return folders
+  }
+
+  public get allClients() {
+    const that = this;
+    return {
+      get<T = BaseClientCompiler>(clientNameOrClass: string | Function, condition: (c: T) => boolean) {
+
+        if (_.isUndefined(clientNameOrClass) && _.isUndefined(condition)) {
+          return that.clients;
+        }
+        return clientsBy(clientNameOrClass, condition, that.clients)
+      }
+    }
+  }
+  //#endregion
+
+  //#region fields
+  private watchers = {} as { [watcherName: string]: chokidar.FSWatcher; };
   private lastAsyncFiles: string[] = [];
-  private currentObservedFolder: string[] = [];
+  private currentObservedFolder = {} as { [watcherName: string]: string[] };
   private clients: BaseClientCompiler[] = [];
   private asyncEventScenario: (event: ChangeOfFile) => Promise<ChangeOfFile>;
   private inited = false;
+  private filesContentCache = {};
+  //#endregion
 
+  //#region constructor
+  private constructor() { }
+  //#endregion
+
+  //#region methods
+
+  //#region methods / sync init
   public async syncInit(client: BaseClientCompiler) {
     // log(`syncInit of ${CLASS.getNameFromObject(client)}`);
     let files = [];
@@ -50,14 +94,25 @@ export class CompilerManager {
         })
     }
     // console.log(`Files for client.folderPath: ${client.folderPath}  client.followSymlinks: ${client.followSymlinks}`)
+
+    for (let index = 0; index < files.length; index++) {
+      const absFilePath = files[index] as string;
+      const fileShouldBeCached = this.fileShouldBeChecked(absFilePath, client);
+      if (fileShouldBeCached) {
+        this.filesContentCache[absFilePath] = (Helpers.readFile(absFilePath) || '').trim();
+      }
+    }
+
     await client.syncAction(files);
   }
+  //#endregion
 
+  //#region methods / async init
   public async asyncInit(client: BaseClientCompiler) {
     // Helpers.log(`this.clients: ${this.clients.map(c => CLASS.getNameFromObject(c)).join(',')} `)
     // Helpers.log(`this.firstFoldersToWatch: ${this.firstFoldersToWatch}`);
-    if (!this.watcher) {
-      this.currentObservedFolder = _.cloneDeep(this.filesToWatch);
+    if (!this.watchers[client.key]) {
+      this.currentObservedFolder[client.key] = _.cloneDeep(this.filesToWatch(client));
       // console.info('FILEESS ADDED TO WATCHER INITT', this.currentObservedFolder)
       const allowedExtEnable = Array.isArray(client.allowedOnlyFileExt) && client.allowedOnlyFileExt.length > 0;
       const allowedExt = !allowedExtEnable ? [] : (client.allowedOnlyFileExt || []).map(ext => {
@@ -72,41 +127,41 @@ export class CompilerManager {
 
       const addionalAllowed = !addionalAllowedEnable ? [] : (client.additionallyAllowedFilesWithNames || []);
 
-      this.watcher = chokidar.watch(this.currentObservedFolder, {
+      this.watchers[client.key] = chokidar.watch(this.currentObservedFolder[client.key], {
         ignoreInitial: true,
         followSymlinks: client.followSymlinks,
         ignorePermissionErrors: true,
-      }).on('all', async (event, f) => {
-        f = crossPlatformPath(f);
+      }).on('all', async (event, absoluteFilePath) => {
+        absoluteFilePath = crossPlatformPath(absoluteFilePath);
 
         if (
           (event !== 'addDir')
-          && !["node_modules", ...client.ignoreFolderPatter].some(s => f.includes(s))
+          && !["node_modules", ...client.ignoreFolderPatter].some(s => absoluteFilePath.includes(s))
           && (
-            (!allowedExtEnable ? true : allowedExt.includes(path.extname(f)))
+            (!allowedExtEnable ? true : allowedExt.includes(path.extname(absoluteFilePath)))
             ||
-            (addionalAllowedEnable && addionalAllowed.includes(path.basename(f)))
+            (addionalAllowedEnable && addionalAllowed.includes(path.basename(absoluteFilePath)))
           )
         ) {
 
-          if (this.lastAsyncFiles.includes(f)) {
+          if (this.lastAsyncFiles.includes(absoluteFilePath)) {
             return;
           } else {
-            this.lastAsyncFiles.push(f);
+            this.lastAsyncFiles.push(absoluteFilePath);
           }
           // Helpers.log(`[ic] event ${event}, path: ${f}`, 1);
           // console.log('this.clients', this.clients.map(c => CLASS.getNameFromObject(c)))
-          let toNotify = this.clients
+          let toNotify = [client]
             .filter(c => {
               return c.folderPath
                 .map(p => crossPlatformPath(p))
                 .find(p => {
                   // console.log('folderPath p:', p)
-                  if (f.startsWith(p)) {
+                  if (absoluteFilePath.startsWith(p)) {
                     if (c.watchDepth === Number.POSITIVE_INFINITY) {
                       return true;
                     }
-                    const r = f.replace(p, '').replace(/^\//, '').split('/').length - 1;
+                    const r = absoluteFilePath.replace(p, '').replace(/^\//, '').split('/').length - 1;
                     return r <= c.watchDepth;
                   }
                   return false;
@@ -116,19 +171,51 @@ export class CompilerManager {
             toNotify = toNotify.filter(f => f.notifyOnFileUnlink);
           }
           // console.log('toNotify', toNotify.map(c => CLASS.getNameFromObject(c)))
-          const change = new ChangeOfFile(toNotify, f, event);
-          if (this.asyncEventScenario) {
-            await this.asyncEventScenario(change);
-          }
-          const clients = change.clientsForChangeFilterExt;
-          for (let index = 0; index < clients.length; index++) {
-            const clientAsyncAction = clients[index];
-            // console.log(`execute for "${CLASS.getNameFromObject(clientAsyncAction)}", outside ? ${clientAsyncAction.executeOutsideScenario}`)
-            if (clientAsyncAction.executeOutsideScenario) {
-              await clientAsyncAction.asyncAction(change);
+
+          let proceeedWithAsyncChange = true;
+
+          const fileShouldBeCached = this.fileShouldBeChecked(absoluteFilePath, client);
+          // console.log(`fileShouldBeCached ${fileShouldBeCached}: ${absoluteFilePath}`)
+          if (fileShouldBeCached && event === 'change') {
+            var currentContent = (Helpers.readFile(absoluteFilePath) || '').trim();
+            if (currentContent === this.filesContentCache[absoluteFilePath]) {
+              // console.log('FILE THE SAME ' + absoluteFilePath)
+              proceeedWithAsyncChange = false;
+            } else {
+              //#region for debugging purpose
+              // const diff = Diff.diffChars(currentContent, this.filesContentCache[absoluteFilePath]);
+              // console.log('FILE NOT THE SAME' + absoluteFilePath);
+              // console.log('FILE DIFF', diff.map((part) => {
+              //   // green for additions, red for deletions
+              //   // grey for common parts
+              //   const color = part.added ? 'green' :
+              //     part.removed ? 'red' : 'grey';
+              //   return part.value[color];
+              // }).join(''))
+              //#endregion
+              this.filesContentCache[absoluteFilePath] = currentContent;
             }
           }
-          this.lastAsyncFiles = this.lastAsyncFiles.filter(ef => ef !== f);
+          // console.log({
+          //   proceeedWithAsyncChange
+          // })
+
+          if (proceeedWithAsyncChange) {
+
+            const change = new ChangeOfFile(toNotify, absoluteFilePath, event);
+            if (this.asyncEventScenario) {
+              await this.asyncEventScenario(change);
+            }
+            const clients = change.clientsForChangeFilterExt;
+            for (let index = 0; index < clients.length; index++) {
+              const clientAsyncAction = clients[index];
+              // console.log(`execute for "${CLASS.getNameFromObject(clientAsyncAction)}", outside ? ${clientAsyncAction.executeOutsideScenario}`)
+              if (clientAsyncAction.executeOutsideScenario) {
+                await clientAsyncAction.asyncAction(change);
+              }
+            }
+          }
+          this.lastAsyncFiles = this.lastAsyncFiles.filter(ef => ef !== absoluteFilePath);
 
         }
 
@@ -148,30 +235,19 @@ export class CompilerManager {
           return a.concat(b);
         }, [])
         .filter(f => {
-          if (!this.currentObservedFolder.includes(f)) {
+          if (!this.currentObservedFolder[client.key].includes(f)) {
             // console.info('FILEESS ADDED TO WATCHER', f)
-            this.watcher.add(f);
+            this.watchers[client.key].add(f);
             newFoldersOrFiles.push(f);
           }
         });
-      this.currentObservedFolder = this.currentObservedFolder.concat(newFoldersOrFiles);
+      this.currentObservedFolder[client.key] = this.currentObservedFolder[client.key].concat(newFoldersOrFiles);
 
     }
   }
+  //#endregion
 
-  public get allClients() {
-    const that = this;
-    return {
-      get<T = BaseClientCompiler>(clientNameOrClass: string | Function,
-        condition: (c: T) => boolean) {
-        if (_.isUndefined(clientNameOrClass) && _.isUndefined(condition)) {
-          return that.clients;
-        }
-        return clientsBy(clientNameOrClass, condition, that.clients)
-      }
-    }
-  }
-
+  //#region methods / add client
   public addClient(client: BaseClientCompiler) {
     // console.log(`Cilent added "${CLASS.getNameFromObject(client)}" folders`, client.folderPath)
     const existed = this.clients.find(c => c === client);
@@ -180,14 +256,25 @@ export class CompilerManager {
     }
     this.clients.push(client);
   }
+  //#endregion
 
+  //#region methods / init scenario
+  /**
+   * @deprecated
+   */
   public async initScenario(
     onAsyncFileChange?: (event: ChangeOfFile) => Promise<any>) {
     this.preventAlreadyInited()
     this.asyncEventScenario = onAsyncFileChange;
     this.inited = true;
   }
+  //#endregion
 
+  //#endregion
+
+  //#region private methods
+
+  //#region private methods / prevent already inited
   private preventAlreadyInited() {
     if (this.inited) {
       Helpers.error(`Please init Compiler Manager only once:
@@ -195,28 +282,28 @@ export class CompilerManager {
       `, false, true)
     }
   }
+  //#endregion
 
-  private get filesToWatch() {
-    const folders: string[] = [];
-    this.clients.forEach(c => {
-      // console.log("c.folderPath", c.folderPath)
-      c.folderPath.forEach(fp => {
-        // console.log(`fp`, fp)
-        if (_.isString(fp) && !folders.includes(fp)) {
-          const mapped = mapForWatching(fp);
-          folders.push(...mapped);
-        }
-      });
-    });
-    return folders
+  //#region private methods / file should be checked
+  private fileShouldBeChecked(absFilePath: string, client: BaseClientCompiler) {
+
+    const fileShouldBeCached = !_.isUndefined(client.folderPathContentCheck.find((patterFolder) => {
+      return crossPlatformPath(absFilePath).startsWith(crossPlatformPath(patterFolder));
+    }));
+
+    return fileShouldBeCached;
   }
+  //#endregion
 
+  //#endregion
 
 }
 
+//#region helpers
 function mapForWatching(c: string): string[] {
   if (fse.lstatSync(c).isDirectory()) {
     return [c, `${c}/**/*.*`];
   }
   return [c];
 }
+//#endregion

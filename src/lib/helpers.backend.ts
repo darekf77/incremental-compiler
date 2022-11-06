@@ -10,6 +10,7 @@ import { CLASS } from 'typescript-class-helpers';
 
 export function clientsBy<T = BaseClientCompiler>(clientNameOrClass: string | Function,
   condition: (c: T) => boolean, clients: BaseClientCompiler[]): T[] {
+
   if (_.isFunction(clientNameOrClass)) {
     clientNameOrClass = CLASS.getName(clientNameOrClass)
   }

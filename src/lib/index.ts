@@ -12,16 +12,6 @@ import { Helpers } from 'tnp-core';
 import { _ } from 'tnp-core';
 import { CLASS } from 'typescript-class-helpers';
 
-export interface HelpersToOverride {
-  info: Function;
-  warn: Function;
-  error: Function;
-  log: Function;
-  runSyncOrAsync: Function;
-  compilationWrapper: Function;
-}
-
-
 /**
  * Template for watcher client:
  *
@@ -45,19 +35,20 @@ export namespace IncCompiler {
   /**
    * 1. Only one task at the time
    * 2. Only files changes not directories
+   * @deprecated
    */
-  export const init = (onAsyncChangeOfFile?:
-    (event: change.ChangeOfFile) => Promise<any>, helperOverride?: HelpersToOverride) => {
-    incCompiler.CompilerManager.Instance.initScenario(onAsyncChangeOfFile);
-    if (_.isObject(helperOverride) && !_.isArray(helperOverride)) {
-      Object.keys(helperOverride).forEach(fnName => {
-        // console.log('override name',fnName)
-        if (_.isFunction(helperOverride[fnName])) {
-          Helpers[fnName] = helperOverride[fnName];
-        }
-      })
-    }
-  };
+  // export const init = (onAsyncChangeOfFile?:
+  //   (event: change.ChangeOfFile) => Promise<any>, helperOverride?: Models.HelpersToOverride) => {
+  //   incCompiler.CompilerManager.Instance.initScenario(onAsyncChangeOfFile);
+  //   if (_.isObject(helperOverride) && !_.isArray(helperOverride)) {
+  //     Object.keys(helperOverride).forEach(fnName => {
+  //       // console.log('override name',fnName)
+  //       if (_.isFunction(helperOverride[fnName])) {
+  //         Helpers[fnName] = helperOverride[fnName];
+  //       }
+  //     })
+  //   }
+  // };
   export function allClients<T>(clientNameOrClass?: string | Function, condition?: (c: T) => boolean) {
     return incCompiler.CompilerManager.Instance.allClients.get(clientNameOrClass, condition)
   }

@@ -1,19 +1,42 @@
+//#region imports
 //#region @backend
 import { BaseClientCompiler } from './base-client-compiler.backend';
 //#endregion
 import { ConfigModels } from 'tnp-config';
-
+//#endregion
 export namespace Models {
 
+  //#region helpers to override
+  // /**
+  //  * @deprecated
+  //  */
+  // export interface HelpersToOverride {
+  //   info: Function;
+  //   warn: Function;
+  //   error: Function;
+  //   log: Function;
+  //   runSyncOrAsync: Function;
+  //   compilationWrapper: Function;
+  // }
+  //#endregion
+
+  //#region start and watch options
   export interface StartAndWatchOptions {
     afterInitCallBack?: () => void;
     watchOnly?: boolean;
   }
+  //#endregion
 
-
-
+  //#region  base client compiler options
   export interface BaseClientCompilerOptions {
     folderPath?: string | string[];
+    /**
+     * It will cache in memory previouse files
+     * to limit async actions calls
+     * and prevent not changed files emiting change event
+     */
+    folderPathContentCheck?: string | string[];
+
     watchDepth?: Number;
     /**
      * default true
@@ -33,13 +56,6 @@ export namespace Models {
     executeOutsideScenario?: boolean;
     subscribeOnlyFor?: ConfigModels.FileExtension[];
   }
-
-  //#region @backend
-  export interface ChangeOfFileCloneOptios {
-    onlyForClient?: BaseClientCompiler[];
-  }
   //#endregion
-
-
 
 }
