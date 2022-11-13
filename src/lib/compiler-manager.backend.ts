@@ -6,7 +6,7 @@ import { Helpers } from 'tnp-core';
 import { ChangeOfFile } from './change-of-file.backend';
 import { BaseClientCompiler } from './base-client-compiler.backend';
 import { ConfigModels } from 'tnp-config';
-//#region for debugging purpose
+//#region for debugging purpose...
 // require('colors');
 // const Diff = require('diff');
 //#endregion
