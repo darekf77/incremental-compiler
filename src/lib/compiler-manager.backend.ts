@@ -78,7 +78,7 @@ export class CompilerManager {
       files = client.folderPath
         .reduce((folderOrFileA, folderOrFileB) => {
           let filesFromB: string[] = [folderOrFileB];
-          if (fse.lstatSync(folderOrFileB).isDirectory()) {
+          if (fse.existsSync(folderOrFileB) && fse.lstatSync(folderOrFileB).isDirectory()) {
             filesFromB = glob.sync(`${folderOrFileB}/**/*.*`, {
               symlinks: client.followSymlinks
             })
@@ -301,7 +301,7 @@ export class CompilerManager {
 
 //#region helpers
 function mapForWatching(c: string): string[] {
-  if (fse.lstatSync(c).isDirectory()) {
+  if (fse.existsSync(c) && fse.lstatSync(c).isDirectory()) {
     return [c, `${c}/**/*.*`];
   }
   return [c];
