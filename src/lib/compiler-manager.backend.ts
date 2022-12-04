@@ -79,8 +79,9 @@ export class CompilerManager {
         .reduce((folderOrFileA, folderOrFileB) => {
           let filesFromB: string[] = [folderOrFileB];
           if (fse.existsSync(folderOrFileB) && fse.lstatSync(folderOrFileB).isDirectory()) {
-            filesFromB = glob.sync(`${folderOrFileB}/**/*.*`, {
-              symlinks: client.followSymlinks
+            filesFromB = glob.sync(`${folderOrFileB}/**/!(node_modules)*.*`, {
+              symlinks: client.followSymlinks,
+              ignore: [`${folderOrFileB}/node_modules/**/*.*`]
             })
           }
           return folderOrFileA.concat(filesFromB);
