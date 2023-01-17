@@ -253,7 +253,7 @@ export class CompilerManager {
     // console.log(`Cilent added "${CLASS.getNameFromObject(client)}" folders`, client.folderPath)
     const existed = this.clients.find(c => c === client);
     if (existed) {
-      Helpers.warn(`Client "${CLASS.getNameFromObject(client)}" alread added`);
+      Helpers.log(`Client "${CLASS.getNameFromObject(client)}" alread added`); // TODO @LAST
     }
     this.clients.push(client);
   }
