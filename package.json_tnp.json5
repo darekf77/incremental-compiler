@@ -15,7 +15,8 @@
       "@types/chokidar",
       "dateformat",
       "@types/dateformat",
-      "typescript-class-helpers"
+      "typescript-class-helpers",
+      "tnp-cli"
     ],
     "dependencies": {},
     "linkedFolders": []
