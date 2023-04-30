@@ -1,0 +1,5 @@
+THIS FILE IS GENERATED.
+          Assets from this folder can be used in npm package "incremental-compiler@13.1.21"
+          created from this project.
+
+          

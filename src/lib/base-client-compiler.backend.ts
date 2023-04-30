@@ -3,6 +3,7 @@ import { path, fse, _, crossPlatformPath } from 'tnp-core';
 import { CLASS } from 'typescript-class-helpers';
 import { ChangeOfFile } from './change-of-file.backend';
 import { CompilerManager } from './compiler-manager.backend';
+import { mapForWatching } from './helpers.backend';
 import { Models } from './models';
 import { Helpers } from 'tnp-core';
 import { CLI } from 'tnp-cli';
@@ -26,6 +27,7 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
   private pathResolve = false;
   private initedWithOptions = false;
   private __folderPath: string[] = [];
+  public lastAsyncFiles: string[] = [];
   private _folderPathContentCheck: string[] = [];
 
   //#endregion
@@ -193,6 +195,8 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
 
   //#region private methods
 
+  watchOptions: { allowedExt?: string[]; addionalAllowed: string[]; allowedExtEnable: boolean; addionalAllowedEnable: boolean; } = {} as any;
+
   //#region private methods / _init
   private _init(options?: Models.BaseClientCompilerOptions) {
     if (_.isUndefined(options.executeOutsideScenario)) {
@@ -236,6 +240,26 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
     }
     // console.log('ASSIGNE', options)
     Object.assign(this, options);
+
+
+    const allowedExtEnable = Array.isArray(this.allowedOnlyFileExt) && this.allowedOnlyFileExt.length > 0;
+    this.watchOptions.allowedExtEnable = allowedExtEnable;
+
+    const allowedExt = !allowedExtEnable ? [] : (this.allowedOnlyFileExt || []).map(ext => {
+      if (ext.startsWith('.')) {
+        return ext;
+      }
+      return `.${ext}`;
+    });
+    this.watchOptions.allowedExt = allowedExt;
+
+    const addionalAllowedEnable = Array.isArray(this.additionallyAllowedFilesWithNames)
+      && this.additionallyAllowedFilesWithNames.length > 0;
+
+    this.watchOptions.addionalAllowedEnable = addionalAllowedEnable;
+
+    const addionalAllowed = !addionalAllowedEnable ? [] : (this.additionallyAllowedFilesWithNames || []);
+    this.watchOptions.addionalAllowed = addionalAllowed;
   }
   //#endregion
 
@@ -247,6 +271,22 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
     return taskName;
   }
   //#endregion
+
+  filesToWatch() {
+    const folders: string[] = [];
+    // this.clients.forEach(c => {
+    [this].forEach(c => {
+      // console.log("c.folderPath", c.folderPath)
+      c.folderPath.forEach(fp => {
+        // console.log(`fp`, fp)
+        if (_.isString(fp) && !folders.includes(fp)) {
+          const mapped = mapForWatching(fp);
+          folders.push(...mapped);
+        }
+      });
+    });
+    return _.cloneDeep(folders);
+  }
 
   //#endregion
 

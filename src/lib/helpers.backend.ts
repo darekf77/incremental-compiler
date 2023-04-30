@@ -2,11 +2,17 @@
 import { CLI } from 'tnp-cli';
 import * as dateformat from 'dateformat';
 import { BaseClientCompiler } from './base-client-compiler.backend';
-import { _ } from 'tnp-core';
+import { fse, _ } from 'tnp-core';
 import { CoreHelpers as Base } from 'tnp-core';
 import { CLASS } from 'typescript-class-helpers';
 //#endregion
 
+export function mapForWatching(c: string): string[] {
+  if (fse.existsSync(c) && fse.lstatSync(c).isDirectory()) {
+    return [c, `${c}/**/*.*`];
+  }
+  return [c];
+}
 
 export function clientsBy<T = BaseClientCompiler>(clientNameOrClass: string | Function,
   condition: (c: T) => boolean, clients: BaseClientCompiler[]): T[] {
