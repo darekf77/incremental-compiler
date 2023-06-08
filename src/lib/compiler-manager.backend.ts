@@ -165,6 +165,7 @@ export class CompilerManager {
                   return true;
                 }
                 const r = absoluteFilePath.replace(p, '').replace(/^\//, '').split('/').length - 1;
+                // @ts-ignore
                 return r <= c.watchDepth;
               }
               return false;
