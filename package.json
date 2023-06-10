@@ -61,7 +61,7 @@
     "typescript-class-helpers": "~16.0.16"
   },
   "private": false,
-  "lastBuildTagHash": "541d268e6a8abb992ade5ff89b45efbc8a415638",
+  "lastBuildTagHash": "ab651790da39c55394756f3f2b6f13d801462835",
   "devDependencies": {
     "@angular-devkit/build-angular": "~16.0.5",
     "@angular-devkit/core": "~16.0.5",
@@ -191,7 +191,7 @@
     "http-proxy-middleware": "0.19.1",
     "http-server": "0.11.1",
     "immutable": "4.3.0",
-    "incremental-compiler": "~16.0.29",
+    "incremental-compiler": "~16.0.30",
     "inquirer": "7.3.3",
     "inquirer-autocomplete-prompt": "1.3.0",
     "is-elevated": "3.0.0",
