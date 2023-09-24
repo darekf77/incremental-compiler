@@ -233,7 +233,7 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
       options.watchDepth = Math.abs(options.watchDepth);
     }
     if (_.isUndefined(options.followSymlinks)) {
-      options.followSymlinks = true;
+      options.followSymlinks = false;
     }
     if (_.isUndefined(options.notifyOnFileUnlink)) {
       options.notifyOnFileUnlink = false;

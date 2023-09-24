@@ -61,12 +61,20 @@ export class CompilerManager {
     if (_.isArray(client.folderPath) && client.folderPath.length > 0) {
       files = client.folderPath
         .reduce((folderOrFileA, folderOrFileB) => {
+          folderOrFileB = crossPlatformPath(folderOrFileB);
           let filesFromB: string[] = [folderOrFileB];
           if (fse.existsSync(folderOrFileB) && fse.lstatSync(folderOrFileB).isDirectory()) {
-            filesFromB = glob.sync(`${folderOrFileB}/**/!(node_modules)*.*`, {
+            const globPath = `${folderOrFileB}/**/!(node_modules)*.*`;
+            const globIgnore = `${folderOrFileB}/node_modules/**/*.*`;
+            filesFromB = glob.sync(globPath, {
               symlinks: client.followSymlinks,
-              ignore: [`${folderOrFileB}/node_modules/**/*.*`]
+              ignore: [globIgnore]
             })
+            // console.log({
+            //   globPath,
+            //   globIgnore,
+            //   GENERATEDFILES: filesFromB.length
+            // })
           }
           return folderOrFileA.concat(filesFromB);
         }, [])
