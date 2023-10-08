@@ -189,7 +189,7 @@ export class CompilerManager {
       const fileShouldBeCached = this.fileShouldBeChecked(absoluteFilePath, client);
       // console.log(`fileShouldBeCached ${fileShouldBeCached}: ${absoluteFilePath}`)
       if (fileShouldBeCached && event === 'change') {
-        var currentContent = (Helpers.readFile(absoluteFilePath) || '').trim();
+        var currentContent = (await Helpers.tryReadFile(absoluteFilePath) || '').trim();
         if (currentContent === this.filesContentCache[absoluteFilePath]) {
           // console.log('FILE THE SAME ' + absoluteFilePath)
           proceeedWithAsyncChange = false;
