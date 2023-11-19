@@ -6,6 +6,7 @@ import { Helpers } from 'tnp-core';
 import { ChangeOfFile } from './change-of-file.backend';
 import { BaseClientCompiler } from './base-client-compiler.backend';
 import { ConfigModels } from 'tnp-config';
+import { COMPILER_POOLING } from './constants';
 //#region for debugging purpose...
 // require('colors');
 // const Diff = require('diff');
@@ -107,10 +108,14 @@ export class CompilerManager {
     if (!this.watchers[client.key]) {
       this.currentObservedFolder[client.key] = client.filesToWatch();
       // console.info('FILEESS ADDED TO WATCHER INITT', this.currentObservedFolder)
+
+
+
       this.watchers[client.key] = chokidar.watch(this.currentObservedFolder[client.key], {
         ignoreInitial: true,
         followSymlinks: client.followSymlinks,
         ignorePermissionErrors: true,
+        ...COMPILER_POOLING,
       }).on('all', async (event, absoluteFilePath) => {
         // console.log(`[ic] event ${event}, path: ${absoluteFilePath}`);
         await this.actionForAsyncEvent(event, absoluteFilePath, client);

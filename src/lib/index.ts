@@ -3,6 +3,7 @@ import * as models from './models';
 export * from './compiler-manager.backend';
 export * from './base-client-compiler.backend';
 export * from './change-of-file.backend';
+export * from './constants';
 
 import * as incCompiler from './compiler-manager.backend';
 import * as incBase from './base-client-compiler.backend';
