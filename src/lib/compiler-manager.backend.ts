@@ -1,5 +1,5 @@
 //#region imports
-import { path, _, chokidar, glob, fse, crossPlatformPath } from 'tnp-core';
+import { path, _, glob, fse, crossPlatformPath } from 'tnp-core';
 import { CLASS } from 'typescript-class-helpers';
 import { clientsBy, mapForWatching } from './helpers.backend';
 import { Helpers } from 'tnp-core';
@@ -7,6 +7,7 @@ import { ChangeOfFile } from './change-of-file.backend';
 import { BaseClientCompiler } from './base-client-compiler.backend';
 import { ConfigModels } from 'tnp-config';
 import { COMPILER_POOLING } from './constants';
+import { IncrementalWatcherInstance, incrementalWatcher } from './incremental-watcher';
 //#region for debugging purpose...
 // require('colors');
 // const Diff = require('diff');
@@ -27,7 +28,7 @@ export class CompilerManager {
   //#endregion
 
   //#region fields & getters
-  private watchers = {} as { [watcherName: string]: chokidar.FSWatcher; };
+  private watchers = {} as { [watcherName: string]: IncrementalWatcherInstance; };
 
   private currentObservedFolder = {} as { [watcherName: string]: string[] };
   private clients: BaseClientCompiler[] = [];
@@ -111,12 +112,12 @@ export class CompilerManager {
 
 
 
-      this.watchers[client.key] = chokidar.watch(this.currentObservedFolder[client.key], {
+      this.watchers[client.key] = (await incrementalWatcher(this.currentObservedFolder[client.key], {
         ignoreInitial: true,
         followSymlinks: client.followSymlinks,
         ignorePermissionErrors: true,
         ...COMPILER_POOLING,
-      }).on('all', async (event, absoluteFilePath) => {
+      })).on('all', async (event, absoluteFilePath) => {
         // console.log(`[ic] event ${event}, path: ${absoluteFilePath}`);
         await this.actionForAsyncEvent(event, absoluteFilePath, client);
       });

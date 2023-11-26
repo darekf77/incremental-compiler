@@ -1,5 +1,6 @@
 import * as models from './models';
 //#region @backend
+export * from './incremental-watcher';
 export * from './compiler-manager.backend';
 export * from './base-client-compiler.backend';
 export * from './change-of-file.backend';
