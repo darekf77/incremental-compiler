@@ -61,7 +61,7 @@
     "typescript-class-helpers": "~16.5.1"
   },
   "private": false,
-  "lastBuildTagHash": "d3c76282b70e157356d40dfc4d2508221762d042",
+  "lastBuildTagHash": "3f8f36a56e622b20d04a28ae76c35a9c2f882c5b",
   "devDependencies": {
     "@angular-devkit/build-angular": "~16.0.5",
     "@angular-devkit/core": "~16.0.5",
@@ -207,7 +207,7 @@
     "image-focus": "1.2.1",
     "immer": "10.0.2",
     "immutable": "4.3.0",
-    "incremental-compiler": "~16.0.34",
+    "incremental-compiler": "~16.5.1",
     "inquirer": "7.3.3",
     "inquirer-autocomplete-prompt": "1.3.0",
     "is-elevated": "3.0.0",
