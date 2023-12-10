@@ -3,9 +3,7 @@ import {
   ListenerForAll, ListenerForSingleEvent
 } from "./incremental-watcher-events";
 
-/**
- * chokidar.FSWatcher;
- */
+
 export interface IncrementalWatcherInstance {
   add(paths: string | ReadonlyArray<string>): void;
   on(event: 'all', listener: ListenerForAll): this;

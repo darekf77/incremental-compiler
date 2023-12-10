@@ -12,12 +12,12 @@ export async function incrementalWatcher(filePath: string | string[], watchOptio
     // engine = 'chokidar';
     engine = '@parcel/watcher';
   }
-  if (engine === '@parcel/watcher') {
-    const instance = new ParcelWatcherAdapter(filePath, watchOptions);
-    return instance as any;
-  } else {
-    const opt = _.cloneDeep(watchOptions);
-    opt['ignorePermissionErrors'] = true;
-    return chokidar.watch(filePath, watchOptions)
-  }
+  // if (engine === '@parcel/watcher') {
+  const instance = new ParcelWatcherAdapter(filePath, watchOptions);
+  return instance as any;
+  // } else {
+  //   const opt = _.cloneDeep(watchOptions);
+  //   opt['ignorePermissionErrors'] = true;
+  //   return chokidar.watch(filePath, watchOptions)
+  // }
 }
