@@ -104,8 +104,18 @@ export class ParcelWatcherAdapter
 
     for (const pathToCatalog of this.pathes) {
       const firstLevelLinks = Helpers.linksToFoldersFrom(pathToCatalog, false);
-      // console.log({ firstLevelLinks, pathToCatalog });
-      for (const linkFolder of firstLevelLinks) {
+      const firstLevelFolders = Helpers.foldersFrom(pathToCatalog).filter(f => !firstLevelLinks.includes(f));
+      const secondLevelLinks = firstLevelFolders.reduce((a, b) => {
+        return a.concat(Helpers.linksToFoldersFrom(b, false))
+      }, [])
+      const linksToWatch = [
+        ...firstLevelLinks,
+        ...secondLevelLinks,
+      ];
+
+
+      // console.log({ firstLevelFolders,  linksToWatch });
+      for (const linkFolder of linksToWatch) {
         // const linkFolderRealPath = crossPlatformPath(fse.realpathSync(linkFolder));
         this.subs.push(await watcher.subscribe(linkFolder, (err, events) => {
 
@@ -138,7 +148,7 @@ export class ParcelWatcherAdapter
 
         for (const listenerEvent of events) {
           listenerEvent.path = crossPlatformPath(listenerEvent.path);
-          // console.log('PARCEL EVENT', { listernes: listernes.length })
+          // console.log(`PARCEL LINK EVENT: ${listenerEvent.path}`)
           for (const listenerData of this.listenerData) {
             const { listenerFromOnFn, allowedEvent } = listenerData;
             this.notifyListener(listenerFromOnFn, allowedEvent, listenerEvent);

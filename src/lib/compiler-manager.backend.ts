@@ -186,7 +186,7 @@ export class CompilerManager {
       } else {
         client.lastAsyncFiles.push(absoluteFilePath);
       }
-      // console.log(`[ic] event ${event}, path: ${absoluteFilePath}`, 1);
+      // console.log(`[ic] final event ${event}, path: ${absoluteFilePath}`, 1);
       // console.log('this.clients', this.clients.map(c => CLASS.getNameFromObject(c)))
       let toNotify = [client]
         .filter(c => {
