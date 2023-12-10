@@ -1,3 +1,14 @@
-import { chokidar } from "tnp-core";
+import {
+  IncrementalWatcherAllEvents,
+  ListenerForAll, ListenerForSingleEvent
+} from "./incremental-watcher-events";
 
-export type IncrementalWatcherInstance = chokidar.FSWatcher;
+/**
+ * chokidar.FSWatcher;
+ */
+export interface IncrementalWatcherInstance {
+  add(paths: string | ReadonlyArray<string>): void;
+  on(event: 'all', listener: ListenerForAll): this;
+
+  on(event: IncrementalWatcherAllEvents, listener: ListenerForSingleEvent): this;
+}

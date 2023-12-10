@@ -17,7 +17,7 @@
       "dateformat",
       "@types/dateformat",
       "typescript-class-helpers",
-      "tnp-cli"
+      "tnp-helpers"
     ],
 
     "dependencies": {},

@@ -16,7 +16,7 @@
         "dateformat",
         "@types/dateformat",
         "typescript-class-helpers",
-        "tnp-cli"
+        "tnp-helpers"
       ],
       "dependencies": {},
       "linkedFolders": [],
@@ -57,7 +57,7 @@
     "dateformat": "3.0.3",
     "fs-extra": "8.1.0",
     "glob": "7.1.2",
-    "tnp-cli": "~16.0.8",
+    "tnp-helpers": "~16.0.11",
     "typescript-class-helpers": "~16.0.19"
   },
   "private": false,
@@ -307,10 +307,10 @@
     "systeminformation": "3.45.7",
     "task.js": "0.1.5",
     "threads": "1.7.0",
+    "tnp-cli": "~16.0.8",
     "tnp-config": "~16.0.20",
     "tnp-core": "~16.0.27",
     "tnp-db": "~16.0.29",
-    "tnp-helpers": "~16.0.11",
     "tnp-models": "~16.0.38",
     "ts-debug": "1.3.0",
     "ts-loader": "2.3.1",

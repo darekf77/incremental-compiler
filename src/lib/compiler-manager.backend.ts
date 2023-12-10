@@ -2,17 +2,34 @@
 import { path, _, glob, fse, crossPlatformPath } from 'tnp-core';
 import { CLASS } from 'typescript-class-helpers';
 import { clientsBy, mapForWatching } from './helpers.backend';
-import { Helpers } from 'tnp-core';
+import { Helpers } from 'tnp-helpers';
 import { ChangeOfFile } from './change-of-file.backend';
 import { BaseClientCompiler } from './base-client-compiler.backend';
 import { ConfigModels } from 'tnp-config';
 import { COMPILER_POOLING } from './constants';
 import { IncrementalWatcherInstance, incrementalWatcher } from './incremental-watcher';
+import { IncrementalWatcherEvents } from './incremental-watcher/incremental-watcher-events';
+import { ParcelWatcherAdapter } from './incremental-watcher/parcel-watcher-adapter.backend';
 //#region for debugging purpose...
 // require('colors');
 // const Diff = require('diff');
 //#endregion
 //#endregion
+
+export function enableWatchers() {
+  if (global.watcherEnabledForIC) {
+    console.warn(`[incremental-compiler] don not use function enableWatchers twice.`)
+    return;
+  }
+  global.watcherEnabledForIC = true;
+
+  // console.log(ParcelWatcherAdapter.instances);
+
+
+  for (const instance of ParcelWatcherAdapter.instances) {
+    instance.startWatching().catch(instance.handleErrors);
+  }
+}
 
 export class CompilerManager {
   //#region static
@@ -107,21 +124,24 @@ export class CompilerManager {
     // Helpers.log(`this.clients: ${this.clients.map(c => CLASS.getNameFromObject(c)).join(',')} `)
     // Helpers.log(`this.firstFoldersToWatch: ${this.firstFoldersToWatch}`);
     if (!this.watchers[client.key]) {
+
       this.currentObservedFolder[client.key] = client.filesToWatch();
       // console.info('FILEESS ADDED TO WATCHER INITT', this.currentObservedFolder)
 
-
-
       this.watchers[client.key] = (await incrementalWatcher(this.currentObservedFolder[client.key], {
+        name: `[incremental-compiler watcher for ${client.key}]`,
         ignoreInitial: true,
         followSymlinks: client.followSymlinks,
-        ignorePermissionErrors: true,
         ...COMPILER_POOLING,
       })).on('all', async (event, absoluteFilePath) => {
         // console.log(`[ic] event ${event}, path: ${absoluteFilePath}`);
-        await this.actionForAsyncEvent(event, absoluteFilePath, client);
+        if (global.watcherEnabledForIC) {
+          await this.actionForAsyncEvent(event, absoluteFilePath, client);
+        }
+
       });
     } else {
+
       if (_.isString(client.folderPath)) {
         client.folderPath = [client.folderPath];
       }
@@ -144,7 +164,7 @@ export class CompilerManager {
   }
 
   private async actionForAsyncEvent(
-    event: 'add' | 'addDir' | 'change' | 'unlink' | 'unlinkDir',
+    event: IncrementalWatcherEvents,
     absoluteFilePath: string,
     client: BaseClientCompiler,
   ) {
@@ -166,7 +186,7 @@ export class CompilerManager {
       } else {
         client.lastAsyncFiles.push(absoluteFilePath);
       }
-      Helpers.log(`[ic] event ${event}, path: ${absoluteFilePath}`, 1);
+      // console.log(`[ic] event ${event}, path: ${absoluteFilePath}`, 1);
       // console.log('this.clients', this.clients.map(c => CLASS.getNameFromObject(c)))
       let toNotify = [client]
         .filter(c => {
