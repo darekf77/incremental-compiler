@@ -1,5 +1,5 @@
 
-import { chokidar, _, path } from 'tnp-core';
+import { chokidar, _, path, frameworkName } from 'tnp-core';
 
 import { IncrementalWatcherInstance } from './incremental-watcher-instance';
 import { IncrementalWatcherOptions } from './incremental-watcher-options';
@@ -12,12 +12,16 @@ export async function incrementalWatcher(filePath: string | string[], watchOptio
     // engine = 'chokidar';
     engine = '@parcel/watcher';
   }
-  // if (engine === '@parcel/watcher') {
-  // const instance = new ParcelWatcherAdapter(filePath, watchOptions);
-  // return instance as any;
-  // } else {
-  const opt = _.cloneDeep(watchOptions);
-  opt['ignorePermissionErrors'] = true;
-  return chokidar.watch(filePath, watchOptions)
-  // }
+  if (frameworkName === 'firedev') {
+    engine = 'chokidar';
+  }
+
+  if (engine === '@parcel/watcher') {
+    const instance = new ParcelWatcherAdapter(filePath, watchOptions);
+    return instance as any;
+  } else {
+    const opt = _.cloneDeep(watchOptions);
+    opt['ignorePermissionErrors'] = true;
+    return chokidar.watch(filePath, watchOptions)
+  }
 }
