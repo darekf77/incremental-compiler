@@ -31,6 +31,7 @@ export function enableWatchers() {
   }
 }
 
+
 export class CompilerManager {
   //#region static
   //#region singleton
@@ -135,9 +136,9 @@ export class CompilerManager {
         ...COMPILER_POOLING,
       })).on('all', async (event, absoluteFilePath) => {
         // console.log(`[ic] event ${event}, path: ${absoluteFilePath}`);
-        if (global.watcherEnabledForIC) {
-          await this.actionForAsyncEvent(event, absoluteFilePath, client);
-        }
+        // if (global.watcherEnabledForIC) { // @LAST
+        await this.actionForAsyncEvent(event, absoluteFilePath, client);
+        // }
 
       });
     } else {

@@ -8,7 +8,10 @@ import { Log, Level } from 'ng2-logger';
 import { IncrementalWatcherInstance } from "./incremental-watcher-instance";
 import { IncrementalWatcherAllEvents, Listener, ListenerForSingleEvent } from './incremental-watcher-events';
 import { path } from 'tnp-core';
-import * as watcher from '@parcel/watcher';
+// import * as watcher from '@parcel/watcher';
+const watcherName = '@parcel/watcher';
+const watcher = require(watcherName);
+import type { AsyncSubscription, Event } from '@parcel/watcher';
 import * as fs from "fs";
 import anymatch, { Matcher, Tester } from 'anymatch';
 import { IOptions } from "glob";
@@ -28,7 +31,7 @@ export class ParcelWatcherAdapter
 
   public pathes: string[] = [];
   private listenerData: { listenerFromOnFn: Listener, allowedEvent: IncrementalWatcherAllEvents }[] = [];
-  private subs: watcher.AsyncSubscription[] = [];
+  private subs: AsyncSubscription[] = [];
   private alreadyStarted: boolean = false;
   private allFilesInitial: string[] = [];
   private foldersPathes: { [folderAbsPath: string]: boolean; } = {};
@@ -163,7 +166,7 @@ export class ParcelWatcherAdapter
   //#endregion
 
   //#region notify listeners
-  notifyListener(listener: Listener, eventAllowed: IncrementalWatcherAllEvents, eventFromWatcher: watcher.Event) {
+  notifyListener(listener: Listener, eventAllowed: IncrementalWatcherAllEvents, eventFromWatcher: Event) {
     if (eventFromWatcher.type === 'create') {
       if (fs.existsSync(eventFromWatcher.path) && fs.lstatSync(eventFromWatcher.path).isDirectory()) {
         this.foldersPathes[eventFromWatcher.path] = true;
