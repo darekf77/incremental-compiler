@@ -9,14 +9,15 @@ import { IncrementalWatcherInstance } from "./incremental-watcher-instance";
 import { IncrementalWatcherAllEvents, Listener, ListenerForSingleEvent } from './incremental-watcher-events';
 import { path } from 'tnp-core';
 // import * as watcher from '@parcel/watcher';
-const watcherName = '@parcel/watcher';
-const watcher = require(watcherName);
-import type { AsyncSubscription, Event } from '@parcel/watcher';
+// const watcherName = '@parcel/watcher';
+// const watcher = require(watcherName);
+// import type { AsyncSubscription, Event } from '@parcel/watcher';
 import * as fs from "fs";
 import anymatch, { Matcher, Tester } from 'anymatch';
 import { IOptions } from "glob";
 import { IncrementalWatcherOptions } from "./incremental-watcher-options";
 
+type Event = any;
 const log = Log.create('ParcelWatcherAdapter',
   Level.__NOTHING
 )
@@ -31,7 +32,7 @@ export class ParcelWatcherAdapter
 
   public pathes: string[] = [];
   private listenerData: { listenerFromOnFn: Listener, allowedEvent: IncrementalWatcherAllEvents }[] = [];
-  private subs: AsyncSubscription[] = [];
+  private subs: any[] = []; /// AsyncSubscription[] = [];
   private alreadyStarted: boolean = false;
   private allFilesInitial: string[] = [];
   private foldersPathes: { [folderAbsPath: string]: boolean; } = {};
@@ -123,6 +124,7 @@ export class ParcelWatcherAdapter
       // console.log({ firstLevelFolders,  linksToWatch });
       for (const linkFolder of linksToWatch) {
         // const linkFolderRealPath = crossPlatformPath(fse.realpathSync(linkFolder));
+        // @ts-ignore
         this.subs.push(await watcher.subscribe(linkFolder, (err, events) => {
 
           if (!global.watcherEnabledForIC) {
@@ -146,6 +148,7 @@ export class ParcelWatcherAdapter
         }));
       }
 
+      // @ts-ignore
       this.subs.push(await watcher.subscribe(pathToCatalog, (err, events) => {
         // console.log(`parcel change: ${pathToCatalog}`)
         if (!global.watcherEnabledForIC) {

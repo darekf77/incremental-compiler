@@ -18,7 +18,6 @@
       "@types/dateformat",
       "typescript-class-helpers",
       "tnp-helpers",
-      "@parcel/watcher",
     ],
 
     "dependencies": {},

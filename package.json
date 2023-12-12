@@ -16,8 +16,7 @@
         "dateformat",
         "@types/dateformat",
         "typescript-class-helpers",
-        "tnp-helpers",
-        "@parcel/watcher"
+        "tnp-helpers"
       ],
       "dependencies": {},
       "linkedFolders": [],
@@ -47,10 +46,9 @@
     ]
   },
   "name": "incremental-compiler",
-  "version": "16.5.6",
+  "version": "16.5.7",
   "license": "MIT",
   "dependencies": {
-    "@parcel/watcher": "2.3.0",
     "@types/chokidar": "2.1.3",
     "@types/dateformat": "1.0.1",
     "@types/fs-extra": "7.0.0",
@@ -108,6 +106,7 @@
     "@ngx-formly/material": "6.1.8",
     "@ngx-translate/core": "15.0.0",
     "@ngx-translate/http-loader": "8.0.0",
+    "@parcel/watcher": "2.3.0",
     "@sweetalert2/ngx-sweetalert2": "12.1.0",
     "@testdeck/jest": "0.3.3",
     "@testdeck/mocha": "0.3.3",
