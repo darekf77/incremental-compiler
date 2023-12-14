@@ -24,7 +24,7 @@ export async function incrementalWatcher(filePath: string | string[], watchOptio
     watchOptions.engine = '@parcel/watcher';
   }
 
-  Helpers.log(`Using watcher: ${watchOptions.engine}`)
+  // Helpers.info(`Using watcher: ${watchOptions.engine}`)
 
   if (watchOptions?.engine === '@parcel/watcher') {
 

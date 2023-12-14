@@ -47,7 +47,7 @@
     ]
   },
   "name": "incremental-compiler",
-  "version": "16.5.10",
+  "version": "16.5.11",
   "license": "MIT",
   "dependencies": {
     "@parcel/watcher": "2.3.0",
