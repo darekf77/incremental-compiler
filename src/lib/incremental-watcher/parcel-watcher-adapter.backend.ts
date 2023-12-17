@@ -108,6 +108,21 @@ export class ParcelWatcherAdapter
 
     this.pushInitial();
 
+    const eventAction = (events: Event[]) => {
+      if (!global.watcherEnabledForIC) {
+        return;
+      }
+      for (const listenerEvent of events) {
+
+        listenerEvent.path = crossPlatformPath(listenerEvent.path);
+        // console.log(`Event ${this.options.name}: ${listenerEvent.type} ${listenerEvent.path}`)
+        for (const listenerData of this.listenerData) {
+          const { listenerFromOnFn, allowedEvent } = listenerData;
+          this.notifyListener(listenerFromOnFn, allowedEvent, listenerEvent);
+        }
+      }
+    }
+
     for (const pathToCatalog of this.pathes) {
       const firstLevelLinks = Helpers.linksToFoldersFrom(pathToCatalog, false);
       const firstLevelFolders = Helpers.foldersFrom(pathToCatalog).filter(f => !firstLevelLinks.includes(f));
@@ -119,48 +134,13 @@ export class ParcelWatcherAdapter
         ...secondLevelLinks,
       ];
       const watcher = require(this.options.engine);
-
-      // console.log({ firstLevelFolders,  linksToWatch });
       for (const linkFolder of linksToWatch) {
-        // const linkFolderRealPath = crossPlatformPath(fse.realpathSync(linkFolder));
-
         this.subs.push(await watcher.subscribe(linkFolder, (err, events) => {
-
-          if (!global.watcherEnabledForIC) {
-            return;
-          }
-
-          for (const listenerEvent of events) {
-
-            listenerEvent.path = crossPlatformPath(listenerEvent.path);
-            // console.log(`parcel link change: ${listenerEvent.path}`,{
-            //   linkFolderRealPath, linkFolder
-            // })
-            // listenerEvent.path = crossPlatformPath([linkFolder, listenerEvent.path.replace(linkFolderRealPath + '/', '')])
-
-            // console.log(`PARCEL LINK EVENT: ${listenerEvent.path}`)
-            for (const listenerData of this.listenerData) {
-              const { listenerFromOnFn, allowedEvent } = listenerData;
-              this.notifyListener(listenerFromOnFn, allowedEvent, listenerEvent);
-            }
-          }
+          eventAction(events);
         }));
       }
-
       this.subs.push(await watcher.subscribe(pathToCatalog, (err, events) => {
-        // console.log(`parcel change: ${pathToCatalog}`)
-        if (!global.watcherEnabledForIC) {
-          return;
-        }
-
-        for (const listenerEvent of events) {
-          listenerEvent.path = crossPlatformPath(listenerEvent.path);
-          // console.log(`PARCEL LINK EVENT: ${listenerEvent.path}`)
-          for (const listenerData of this.listenerData) {
-            const { listenerFromOnFn, allowedEvent } = listenerData;
-            this.notifyListener(listenerFromOnFn, allowedEvent, listenerEvent);
-          }
-        }
+        eventAction(events);
       }));
     }
   }

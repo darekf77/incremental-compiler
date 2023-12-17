@@ -6,7 +6,7 @@ import { IncrementalWatcherOptions } from './incremental-watcher-options';
 import { ParcelWatcherAdapter } from './parcel-watcher-adapter.backend';
 
 
-export async function incrementalWatcher(filePath: string | string[], watchOptions?: IncrementalWatcherOptions): Promise<IncrementalWatcherInstance> {
+export async function incrementalWatcher(filePath: string | string[], watchOptions: IncrementalWatcherOptions): Promise<IncrementalWatcherInstance> {
   if (!watchOptions) {
     watchOptions = ({} as any);
   }
@@ -16,6 +16,8 @@ export async function incrementalWatcher(filePath: string | string[], watchOptio
     // @ts-ignore
     watchOptions.engine = '@parcel/watcher';
   }
+
+
   if (frameworkName === 'firedev') {
     // @ts-ignore
     watchOptions.engine = 'chokidar';
@@ -24,8 +26,12 @@ export async function incrementalWatcher(filePath: string | string[], watchOptio
     watchOptions.engine = '@parcel/watcher';
   }
 
-  Helpers.logInfo(`Using watcher: ${watchOptions.engine}`)
 
+  // watchOptions.engine = 'chokidar';
+
+  // Helpers.logInfo(`Using watcher: ${watchOptions.engine}`)
+
+  // @ts-ignore
   if (watchOptions?.engine === '@parcel/watcher') {
 
     const instance = new ParcelWatcherAdapter(filePath, watchOptions);
