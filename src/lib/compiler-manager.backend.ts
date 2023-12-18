@@ -16,22 +16,6 @@ import { ParcelWatcherAdapter } from './incremental-watcher/parcel-watcher-adapt
 //#endregion
 //#endregion
 
-export function enableWatchers() {
-  if (global.watcherEnabledForIC) {
-    console.warn(`[incremental-compiler] don not use function enableWatchers twice.`)
-    return;
-  }
-  global.watcherEnabledForIC = true;
-
-  // console.log(ParcelWatcherAdapter.instances);
-
-
-  for (const instance of ParcelWatcherAdapter.instances) {
-    instance.startWatching().catch(instance.handleErrors);
-  }
-}
-
-
 export class CompilerManager {
   //#region static
   //#region singleton
@@ -136,9 +120,9 @@ export class CompilerManager {
         ...COMPILER_POOLING,
       })).on('all', async (event, absoluteFilePath) => {
         // console.log(`[ic] event ${event}, path: ${absoluteFilePath}`);
-        // if (global.watcherEnabledForIC) { // @LAST
+
         await this.actionForAsyncEvent(event, absoluteFilePath, client);
-        // }
+
 
       });
     } else {

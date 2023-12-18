@@ -38,9 +38,6 @@ export class ParcelWatcherAdapter
   //#endregion
 
   //#region getters
-  private get globalWatchingEnable(): boolean {
-    return !!global.watcherEnabledForIC;
-  }
 
   private get allOtherInstances() {
     return ParcelWatcherAdapter.instances.filter(f => f !== this);
@@ -109,9 +106,7 @@ export class ParcelWatcherAdapter
     this.pushInitial();
 
     const eventAction = (events: Event[]) => {
-      if (!global.watcherEnabledForIC) {
-        return;
-      }
+
       for (const listenerEvent of events) {
 
         listenerEvent.path = crossPlatformPath(listenerEvent.path);
@@ -216,17 +211,18 @@ export class ParcelWatcherAdapter
       this.getFiles(c);
     });
 
-    if (this.globalWatchingEnable) {
-      this.stopWatching().then(() => {
-        this.startWatching().catch(this.handleErrors);
-      });
-    }
+
+    this.stopWatching().then(() => {
+      this.startWatching().catch(this.handleErrors);
+    });
+
   }
   //#endregion
 
   //#region on
   on(allowedEvent: IncrementalWatcherAllEvents, listenerFromOnFn: Listener) {
     this.listenerData.push({ listenerFromOnFn, allowedEvent });
+    this.startWatching().catch(this.handleErrors);
   }
   //#endregion
 

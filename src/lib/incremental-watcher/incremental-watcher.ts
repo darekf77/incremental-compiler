@@ -27,7 +27,8 @@ export async function incrementalWatcher(filePath: string | string[], watchOptio
   }
 
 
-  // watchOptions.engine = 'chokidar';
+  // @LAST @parcel/watcher sometime does not work :/
+  watchOptions.engine = 'chokidar';
 
   // Helpers.logInfo(`Using watcher: ${watchOptions.engine}`)
 
