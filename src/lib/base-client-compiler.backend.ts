@@ -108,6 +108,7 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
   }
   //#endregion
 
+  protected onlySingleRun = true;
   //#region api methods / start
   /**
    * Do not override this
@@ -139,7 +140,7 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
    */
   public async startAndWatch(taskName?: string, options?: Models.StartAndWatchOptions)
     : Promise<BaseClientCompiler<RES_ASYNC, RES_SYNC, ADDITIONAL_DATA>> {
-
+    this.onlySingleRun = false;
     if (!this.initedWithOptions) {
       Helpers.error(`[BaseClientCompiler] Please init client class intance with options`, false, true)
     }
