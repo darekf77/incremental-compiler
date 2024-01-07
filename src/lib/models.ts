@@ -21,10 +21,13 @@ export namespace Models {
   //#endregion
 
   //#region start and watch options
-  export interface StartAndWatchOptions {
-    afterInitCallBack?: () => void;
+  export interface StartAndWatchOptions<INIT_PARAMS = any> {
+    afterInitCallBack?: (initalParams?: INIT_PARAMS) => void;
     watchOnly?: boolean;
+    taskName?: string
+    initalParams?: INIT_PARAMS;
   }
+  export type StartOptions<T = any> = Omit<StartAndWatchOptions<T>, 'watchOnly'>;
   //#endregion
 
   //#region  base client compiler options

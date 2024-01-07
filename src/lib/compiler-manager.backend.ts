@@ -33,7 +33,7 @@ export class CompilerManager {
   private watchers = {} as { [watcherName: string]: IncrementalWatcherInstance; };
 
   private currentObservedFolder = {} as { [watcherName: string]: string[] };
-  private clients: BaseClientCompiler[] = [];
+  private clients: BaseClientCompiler<any>[] = [];
   private asyncEventScenario: (event: ChangeOfFile) => Promise<ChangeOfFile>;
   private inited = false;
   private filesContentCache = {};
@@ -41,7 +41,7 @@ export class CompilerManager {
   public get allClients() {
     const that = this;
     return {
-      get<T = BaseClientCompiler>(clientNameOrClass: string | Function, condition: (c: T) => boolean) {
+      get<T = BaseClientCompiler<any>>(clientNameOrClass: string | Function, condition: (c: T) => boolean) {
 
         if (_.isUndefined(clientNameOrClass) && _.isUndefined(condition)) {
           return that.clients;
@@ -59,7 +59,7 @@ export class CompilerManager {
   //#region methods
 
   //#region methods / sync init
-  public async syncInit(client: BaseClientCompiler) {
+  public async syncInit(client: BaseClientCompiler<any>) {
     // log(`syncInit of ${CLASS.getNameFromObject(client)}`);
     let files = [];
     if (_.isArray(client.folderPath) && client.folderPath.length > 0) {
@@ -105,7 +105,7 @@ export class CompilerManager {
   //#endregion
 
   //#region methods / async init
-  public async asyncInit(client: BaseClientCompiler) {
+  public async asyncInit(client: BaseClientCompiler<any>, initialParams: any) {
     // Helpers.log(`this.clients: ${this.clients.map(c => CLASS.getNameFromObject(c)).join(',')} `)
     // Helpers.log(`this.firstFoldersToWatch: ${this.firstFoldersToWatch}`);
     if (!this.watchers[client.key]) {
@@ -121,7 +121,7 @@ export class CompilerManager {
       })).on('all', async (event, absoluteFilePath) => {
         // console.log(`[ic] event ${event}, path: ${absoluteFilePath}`);
 
-        await this.actionForAsyncEvent(event, absoluteFilePath, client);
+        await this.actionForAsyncEvent(event, absoluteFilePath, client, initialParams);
 
 
       });
@@ -151,7 +151,8 @@ export class CompilerManager {
   private async actionForAsyncEvent(
     event: IncrementalWatcherEvents,
     absoluteFilePath: string,
-    client: BaseClientCompiler,
+    client: BaseClientCompiler<any>,
+    initalParams: any,
   ) {
 
     absoluteFilePath = crossPlatformPath(absoluteFilePath);
@@ -234,7 +235,7 @@ export class CompilerManager {
           const clientAsyncAction = clients[index];
           // console.log(`execute for "${CLASS.getNameFromObject(clientAsyncAction)}", outside ? ${clientAsyncAction.executeOutsideScenario}`)
           if (clientAsyncAction.executeOutsideScenario) {
-            await clientAsyncAction.asyncAction(change);
+            await clientAsyncAction.asyncAction(change, initalParams);
           }
         }
       }
@@ -250,7 +251,7 @@ export class CompilerManager {
   //#endregion
 
   //#region methods / add client
-  public addClient(client: BaseClientCompiler) {
+  public addClient(client: BaseClientCompiler<any>) {
     // console.log(`Cilent added "${CLASS.getNameFromObject(client)}" folders`, client.folderPath)
     const existed = this.clients.find(c => c === client);
     if (existed) {
@@ -287,7 +288,7 @@ export class CompilerManager {
   //#endregion
 
   //#region private methods / file should be checked
-  private fileShouldBeChecked(absFilePath: string, client: BaseClientCompiler) {
+  private fileShouldBeChecked(absFilePath: string, client: BaseClientCompiler<any>) {
 
     const fileShouldBeCached = !_.isUndefined(client.folderPathContentCheck.find((patterFolder) => {
       return crossPlatformPath(absFilePath).startsWith(crossPlatformPath(patterFolder));

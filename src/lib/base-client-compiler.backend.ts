@@ -5,12 +5,12 @@ import { ChangeOfFile } from './change-of-file.backend';
 import { CompilerManager } from './compiler-manager.backend';
 import { mapForWatching } from './helpers.backend';
 import { Models } from './models';
-import { Helpers } from 'tnp-core';
+import { Helpers } from 'tnp-core/src';
 import { CLI } from 'tnp-cli';
 import { ConfigModels } from 'tnp-config';
 //#endregion
 
-export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA = any>
+export class BaseClientCompiler<INITAL_PARAMS = any>
   implements Models.BaseClientCompilerOptions {
 
   //#region fields
@@ -113,8 +113,11 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
   /**
    * Do not override this
    */
-  public async start(taskName?: string, afterInitCallBack?: () => void)
-    : Promise<BaseClientCompiler<RES_ASYNC, RES_SYNC, ADDITIONAL_DATA>> {
+  public async start(options?: Models.StartOptions<INITAL_PARAMS>)
+    : Promise<BaseClientCompiler<INITAL_PARAMS>> {
+
+    let { taskName, afterInitCallBack, initalParams } = options || {};
+
     CompilerManager.Instance.addClient(this);
     if (!this.initedWithOptions) {
       Helpers.error(`[BaseClientCompiler] Please init client class intance with options`, false, true)
@@ -128,7 +131,7 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
     }, `${CLI.chalk.green('sync action')} for ${taskName}`, 'Event:');
 
     if (_.isFunction(afterInitCallBack)) {
-      await Helpers.runSyncOrAsync(afterInitCallBack);
+      await Helpers.runSyncOrAsync({ functionFn: afterInitCallBack, arrayOfParams: [initalParams] });
     }
     return this;
   }
@@ -138,14 +141,13 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
   /**
    * Do not override this
    */
-  public async startAndWatch(taskName?: string, options?: Models.StartAndWatchOptions)
-    : Promise<BaseClientCompiler<RES_ASYNC, RES_SYNC, ADDITIONAL_DATA>> {
+  public async startAndWatch(options?: Models.StartAndWatchOptions<INITAL_PARAMS>)
+    : Promise<BaseClientCompiler<INITAL_PARAMS>> {
+    let { taskName, watchOnly, initalParams } = options || {};
     this.onlySingleRun = false;
     if (!this.initedWithOptions) {
       Helpers.error(`[BaseClientCompiler] Please init client class intance with options`, false, true)
     }
-
-    const { watchOnly, afterInitCallBack } = options || {};
 
     taskName = this.fixTaskName(taskName);
     // @ts-ignore
@@ -154,18 +156,18 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
       if (watchOnly) {
         console.log(CLI.chalk.gray(`[incremental-compiler] Watch mode only for "${taskName}"`));
       } else {
-        await this.start(taskName, afterInitCallBack);
+        await this.start(options);
       }
       if (_.isFunction(this.preAsyncAction)) {
         await this.compilationWrapper(async () => {
-          await this.preAsyncAction()
+          await this.preAsyncAction((initalParams || {}) as any)
         },
           `${CLI.chalk.green('pre-async action')} for ${taskName}`, 'Event:');
       }
-      await CompilerManager.Instance.asyncInit(this);
+      await CompilerManager.Instance.asyncInit(this, initalParams || {});
     } else {
       Helpers.log(`No action for task: ${taskName}.. starting task`);
-      await this.start(taskName, afterInitCallBack);
+      await this.start(options);
     }
     return this;
   }
@@ -177,17 +179,17 @@ export class BaseClientCompiler<RES_ASYNC = any, RES_SYNC = any, ADDITIONAL_DATA
    * @param absolteFilesPathes for each watched file
    * @returns
    */
-  public syncAction(absolteFilesPathes?: string[]): Promise<RES_SYNC> {
+  public syncAction(absolteFilesPathes?: string[], initalParams?: INITAL_PARAMS): Promise<void> {
     return void 0;
   }
   //#endregion
 
   //#region api methods / pre async action
-  public async preAsyncAction() { }
+  public async preAsyncAction(initalParams?: INITAL_PARAMS): Promise<void> { }
   //#endregion
 
   //#region api methods / async action
-  public asyncAction(asyncEvents: ChangeOfFile, additionalData?: ADDITIONAL_DATA): Promise<RES_ASYNC> {
+  public asyncAction(asyncEvents: ChangeOfFile, initalParams?: INITAL_PARAMS): Promise<void> {
     return void 0;
   }
   //#endregion
