@@ -127,7 +127,7 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
     // @ts-ignore
     this.taskName = taskName;
     await this.compilationWrapper(async () => {
-      await CompilerManager.Instance.syncInit(this);
+      await CompilerManager.Instance.syncInit(this, initalParams);
     }, `${CLI.chalk.green('sync action')} for ${taskName}`, 'Event:');
 
     if (_.isFunction(afterInitCallBack)) {

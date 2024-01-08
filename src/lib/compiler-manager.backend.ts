@@ -59,7 +59,7 @@ export class CompilerManager {
   //#region methods
 
   //#region methods / sync init
-  public async syncInit(client: BaseClientCompiler<any>) {
+  public async syncInit(client: BaseClientCompiler<any>, initalParams: any) {
     // log(`syncInit of ${CLASS.getNameFromObject(client)}`);
     let files = [];
     if (_.isArray(client.folderPath) && client.folderPath.length > 0) {
@@ -100,7 +100,7 @@ export class CompilerManager {
       }
     }
 
-    await client.syncAction(files);
+    await client.syncAction(files, initalParams);
   }
   //#endregion
 
