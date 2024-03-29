@@ -2,7 +2,7 @@
 //#region @backend
 import { BaseClientCompiler } from './base-client-compiler.backend';
 //#endregion
-import { ConfigModels } from 'tnp-config';
+import { CoreModels } from 'tnp-core';
 //#endregion
 export namespace Models {
 
@@ -57,7 +57,7 @@ export namespace Models {
      */
     additionallyAllowedFilesWithNames?: string[];
     executeOutsideScenario?: boolean;
-    subscribeOnlyFor?: ConfigModels.FileExtension[];
+    subscribeOnlyFor?: CoreModels.FileExtension[];
   }
   //#endregion
 

@@ -7,7 +7,7 @@ import { mapForWatching } from './helpers.backend';
 import { Models } from './models';
 import { Helpers } from 'tnp-core/src';
 import { CLI } from 'tnp-cli';
-import { ConfigModels } from 'tnp-config';
+import { CoreModels } from 'tnp-core';
 //#endregion
 
 export class BaseClientCompiler<INITAL_PARAMS = any>
@@ -15,7 +15,7 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
 
   //#region fields
   public readonly followSymlinks: boolean;
-  public readonly subscribeOnlyFor: ConfigModels.FileExtension[] = []
+  public readonly subscribeOnlyFor: CoreModels.FileExtension[] = []
   public readonly executeOutsideScenario: boolean;
   public readonly watchDepth: Number;
   public readonly taskName: string;
@@ -24,7 +24,7 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
   public additionallyAllowedFilesWithNames?: string[];
   public readonly notifyOnFileUnlink: boolean;
   public compilationWrapper = Helpers.compilationWrapper;
-  private pathResolve = false;
+  private pathResolve: boolean = false;
   private initedWithOptions = false;
   private __folderPath: string[] = [];
   public lastAsyncFiles: string[] = [];

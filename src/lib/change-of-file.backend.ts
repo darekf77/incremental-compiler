@@ -2,7 +2,7 @@
 import { path, _ } from 'tnp-core';
 import { clientsBy } from './helpers.backend';
 import { BaseClientCompiler } from './base-client-compiler.backend';
-import { ConfigModels } from 'tnp-config';
+import { CoreModels } from 'tnp-core';
 //#endregion
 
 export class ChangeOfFile {
@@ -31,8 +31,8 @@ export class ChangeOfFile {
       return f.subscribeOnlyFor.includes(this.fileExt);
     });
   }
-  public get fileExt(): ConfigModels.FileExtension {
-    return path.extname(this.fileAbsolutePath).replace('.', '') as ConfigModels.FileExtension;
+  public get fileExt(): CoreModels.FileExtension {
+    return path.extname(this.fileAbsolutePath).replace('.', '') as CoreModels.FileExtension;
   }
 
   clientsBy<T = BaseClientCompiler>(clientNameOrClass: string | Function,

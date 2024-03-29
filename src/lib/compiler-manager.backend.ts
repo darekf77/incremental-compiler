@@ -5,7 +5,7 @@ import { clientsBy, mapForWatching } from './helpers.backend';
 import { Helpers } from 'tnp-helpers';
 import { ChangeOfFile } from './change-of-file.backend';
 import { BaseClientCompiler } from './base-client-compiler.backend';
-import { ConfigModels } from 'tnp-config';
+import { CoreModels } from 'tnp-core';
 import { COMPILER_POOLING } from './constants';
 import { IncrementalWatcherInstance, incrementalWatcher } from './incremental-watcher';
 import { IncrementalWatcherEvents } from './incremental-watcher/incremental-watcher-events';
@@ -85,7 +85,7 @@ export class CompilerManager {
         .filter(f => {
           if (client.subscribeOnlyFor.length > 0) {
             return client.subscribeOnlyFor
-              .includes(path.extname(f).replace('.', '') as ConfigModels.FileExtension);
+              .includes(path.extname(f).replace('.', '') as CoreModels.FileExtension);
           }
           return true;
         })
