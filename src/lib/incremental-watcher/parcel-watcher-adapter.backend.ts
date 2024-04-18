@@ -11,7 +11,7 @@ import { path } from 'tnp-core';
 // import * as watcher from '@parcel/watcher';
 // const watcherName = '@parcel/watcher';
 
-import type { AsyncSubscription, Event } from '@parcel/watcher';
+// import type { AsyncSubscription, Event } from '@parcel/watcher';
 import * as fs from "fs";
 import anymatch, { Matcher, Tester } from 'anymatch';
 import { IOptions } from "glob";
@@ -105,7 +105,7 @@ export class ParcelWatcherAdapter
 
     this.pushInitial();
 
-    const eventAction = (events: Event[]) => {
+    const eventAction = (events: any[]) => {
 
       for (const listenerEvent of events) {
 
@@ -142,7 +142,7 @@ export class ParcelWatcherAdapter
   //#endregion
 
   //#region notify listeners
-  notifyListener(listener: Listener, eventAllowed: IncrementalWatcherAllEvents, eventFromWatcher: Event) {
+  notifyListener(listener: Listener, eventAllowed: IncrementalWatcherAllEvents, eventFromWatcher: any) {
     if (eventFromWatcher.type === 'create') {
       if (fs.existsSync(eventFromWatcher.path) && fs.lstatSync(eventFromWatcher.path).isDirectory()) {
         this.foldersPathes[eventFromWatcher.path] = true;
