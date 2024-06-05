@@ -44,7 +44,7 @@
   "type": "isomorphic-lib",
   "isCoreProject": false,
   "useFramework": false,
-  "version": "v4",
+  "version": "v16",
   "isGenerated": false,
   "license": "MIT",
   "private": false,
