@@ -49,7 +49,7 @@
     ]
   },
   "name": "incremental-compiler",
-  "version": "16.444.3",
+  "version": "16.444.4",
   "license": "MIT",
   "dependencies": {
     "@types/chokidar": "2.1.3",
