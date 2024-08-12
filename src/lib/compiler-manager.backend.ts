@@ -71,7 +71,8 @@ export class CompilerManager {
             const globPath = `${folderOrFileB}/**/!(node_modules)*.*`;
             const globIgnore = `${folderOrFileB}/node_modules/**/*.*`;
             filesFromB = glob.sync(globPath, {
-              symlinks: client.followSymlinks,
+              // ! TODO QUICK_FIX for v18 @LAST
+              symlinks: client.followSymlinks as any,
               ignore: [globIgnore]
             })
             // console.log({

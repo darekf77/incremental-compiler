@@ -1,7 +1,5 @@
 {
-  "resources": [
-    "README.md"
-  ],
+  "resources": ["README.md"],
 
   "overrided": {
     "ignoreDepsPattern": [],
@@ -17,13 +15,12 @@
       "dateformat",
       "@types/dateformat",
       "typescript-class-helpers",
-      "tnp-helpers",
-      // "@parcel/watcher",
+      "tnp-helpers"
     ],
 
     "dependencies": {},
     "linkedFolders": [],
-    "npmFixes": [],
+    "npmFixes": []
   },
 
   "smartContainerBuildTarget": "",
@@ -37,21 +34,18 @@
     "cliBuildNoDts": false,
     "cliBuildObscure": false,
     "cliBuildIncludeNodeModules": false,
-    "cliBuildUglify": false,
+    "cliBuildUglify": false
   },
 
   "smartContainerTarget": "",
   "type": "isomorphic-lib",
   "isCoreProject": false,
   "useFramework": false,
-  "version": "v16",
+  "version": "v18",
   "isGenerated": false,
   "license": "MIT",
   "private": false,
   "main": "index.js",
   "workerPlugins": {},
-
-  "additionalNpmNames": [
-    "firedev-incremental-watcher"
-  ],
+  "additionalNpmNames": ["firedev-incremental-watcher"]
 }
