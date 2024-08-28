@@ -3,11 +3,11 @@ import {
   // chokidar,
   crossPlatformPath, fse, glob, _
 } from "tnp-core";
-import { Helpers } from 'tnp-helpers';
-import { Log, Level } from 'ng2-logger';
+import { Helpers } from 'tnp-helpers/src';
+import { Log, Level } from 'ng2-logger/src';
 import { IncrementalWatcherInstance } from "./incremental-watcher-instance";
 import { IncrementalWatcherAllEvents, Listener, ListenerForSingleEvent } from './incremental-watcher-events';
-import { path } from 'tnp-core';
+import { path } from 'tnp-core/src';
 // import * as watcher from '@parcel/watcher';
 // const watcherName = '@parcel/watcher';
 

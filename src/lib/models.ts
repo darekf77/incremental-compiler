@@ -2,7 +2,7 @@
 //#region @backend
 import { BaseClientCompiler } from './base-client-compiler.backend';
 //#endregion
-import { CoreModels } from 'tnp-core';
+import { CoreModels } from 'tnp-core/src';
 //#endregion
 export namespace Models {
 

@@ -1,5 +1,5 @@
 
-import { chokidar, _, path, frameworkName, Helpers } from 'tnp-core';
+import { chokidar, _, path, frameworkName, Helpers } from 'tnp-core/src';
 
 import { IncrementalWatcherInstance } from './incremental-watcher-instance';
 import { IncrementalWatcherOptions } from './incremental-watcher-options';
@@ -18,7 +18,7 @@ export async function incrementalWatcher(filePath: string | string[], watchOptio
   }
 
 
-  if (frameworkName === 'firedev') {
+  if (frameworkName === 'taon') {
     // @ts-ignore
     watchOptions.engine = 'chokidar';
   } else {

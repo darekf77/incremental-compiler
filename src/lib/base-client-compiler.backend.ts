@@ -1,13 +1,13 @@
 //#region imports
-import { path, fse, _, crossPlatformPath } from 'tnp-core';
-import { CLASS } from 'typescript-class-helpers';
+import { path, fse, _, crossPlatformPath } from 'tnp-core/src';
+import { CLASS } from 'typescript-class-helpers/src';
 import { ChangeOfFile } from './change-of-file.backend';
 import { CompilerManager } from './compiler-manager.backend';
 import { mapForWatching } from './helpers.backend';
 import { Models } from './models';
 import { Helpers } from 'tnp-core/src';
-import { CLI } from 'tnp-cli';
-import { CoreModels } from 'tnp-core';
+import { CLI } from 'tnp-cli/src';
+import { CoreModels } from 'tnp-core/src';
 //#endregion
 
 export class BaseClientCompiler<INITAL_PARAMS = any>

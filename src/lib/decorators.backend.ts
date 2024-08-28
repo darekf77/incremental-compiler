@@ -1,8 +1,8 @@
 //#region imports
-import { CLASS } from 'typescript-class-helpers';
-import { _ } from 'tnp-core';
+import { CLASS } from 'typescript-class-helpers/src';
+import { _ } from 'tnp-core/src';
 import { ChangeOfFile } from './change-of-file.backend';
-import { Helpers } from 'tnp-core';
+import { Helpers } from 'tnp-core/src';
 //#endregion
 
 export function AsyncAction() {

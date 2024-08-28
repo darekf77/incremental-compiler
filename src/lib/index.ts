@@ -10,14 +10,14 @@ import * as incCompiler from './compiler-manager.backend';
 import * as incBase from './base-client-compiler.backend';
 import * as change from './change-of-file.backend';
 import * as deco from './decorators.backend';
-import { Helpers } from 'tnp-core';
-import { _ } from 'tnp-core';
-import { CLASS } from 'typescript-class-helpers';
+import { Helpers } from 'tnp-core/src';
+import { _ } from 'tnp-core/src';
+import { CLASS } from 'typescript-class-helpers/src';
 
 /**
  * Template for watcher client:
  *
- * import { IncCompiler } from 'firedev'
+ * import { IncCompiler } from 'taon'
  *
  * IncCompiler.init( asyncChangeOfFile => {
  *

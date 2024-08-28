@@ -1,10 +1,10 @@
 //#region imports
-import { CLI } from 'tnp-cli';
+import { CLI } from 'tnp-cli/src';
 import * as dateformat from 'dateformat';
 import { BaseClientCompiler } from './base-client-compiler.backend';
-import { fse, _ } from 'tnp-core';
-import { CoreHelpers as Base } from 'tnp-core';
-import { CLASS } from 'typescript-class-helpers';
+import { fse, _ } from 'tnp-core/src';
+import { CoreHelpers as Base } from 'tnp-core/src';
+import { CLASS } from 'typescript-class-helpers/src';
 //#endregion
 
 export function mapForWatching(c: string): string[] {

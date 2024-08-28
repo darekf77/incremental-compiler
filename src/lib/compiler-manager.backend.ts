@@ -1,11 +1,11 @@
 //#region imports
-import { path, _, glob, fse, crossPlatformPath } from 'tnp-core';
-import { CLASS } from 'typescript-class-helpers';
+import { path, _, glob, fse, crossPlatformPath } from 'tnp-core/src';
+import { CLASS } from 'typescript-class-helpers/src';
 import { clientsBy, mapForWatching } from './helpers.backend';
-import { Helpers } from 'tnp-helpers';
+import { Helpers } from 'tnp-helpers/src';
 import { ChangeOfFile } from './change-of-file.backend';
 import { BaseClientCompiler } from './base-client-compiler.backend';
-import { CoreModels } from 'tnp-core';
+import { CoreModels } from 'tnp-core/src';
 import { COMPILER_POOLING } from './constants';
 import { IncrementalWatcherInstance, incrementalWatcher } from './incremental-watcher';
 import { IncrementalWatcherEvents } from './incremental-watcher/incremental-watcher-events';

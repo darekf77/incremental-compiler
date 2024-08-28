@@ -47,5 +47,5 @@
   "private": false,
   "main": "index.js",
   "workerPlugins": {},
-  "additionalNpmNames": ["firedev-incremental-watcher"]
+  "additionalNpmNames": ["taon-incremental-watcher"]
 }

@@ -1,8 +1,8 @@
 //#region imports
-import { path, _ } from 'tnp-core';
+import { path, _ } from 'tnp-core/src';
 import { clientsBy } from './helpers.backend';
 import { BaseClientCompiler } from './base-client-compiler.backend';
-import { CoreModels } from 'tnp-core';
+import { CoreModels } from 'tnp-core/src';
 //#endregion
 
 export class ChangeOfFile {
