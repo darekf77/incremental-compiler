@@ -1,5 +1,5 @@
 //#region imports
-import { CLI } from 'tnp-cli/src';
+import { CLI } from 'tnp-core/src';
 import * as dateformat from 'dateformat';
 import { BaseClientCompiler } from './base-client-compiler.backend';
 import { fse, _ } from 'tnp-core/src';

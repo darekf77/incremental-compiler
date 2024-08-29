@@ -6,7 +6,7 @@ import { CompilerManager } from './compiler-manager.backend';
 import { mapForWatching } from './helpers.backend';
 import { Models } from './models';
 import { Helpers } from 'tnp-core/src';
-import { CLI } from 'tnp-cli/src';
+import { CLI } from 'tnp-core/src';
 import { CoreModels } from 'tnp-core/src';
 //#endregion
 
