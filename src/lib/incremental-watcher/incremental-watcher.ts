@@ -18,13 +18,13 @@ export async function incrementalWatcher(filePath: string | string[], watchOptio
   }
 
 
-  if (frameworkName === 'taon') {
-    // @ts-ignore
-    watchOptions.engine = 'chokidar';
-  } else {
-    // @ts-ignore
-    watchOptions.engine = '@parcel/watcher';
-  }
+  // if (frameworkName === 'taon') {
+  //   // @ts-ignore
+  //   watchOptions.engine = 'chokidar';
+  // } else {
+  //   // @ts-ignore
+  //   watchOptions.engine = '@parcel/watcher';
+  // }
 
 
   // @LAST @parcel/watcher sometime does not work :/

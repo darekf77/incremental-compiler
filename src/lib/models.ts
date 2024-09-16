@@ -32,6 +32,7 @@ export namespace Models {
 
   //#region  base client compiler options
   export interface BaseClientCompilerOptions {
+    taskName: string;
     folderPath?: string | string[];
     /**
      * It will cache in memory previouse files
@@ -40,7 +41,6 @@ export namespace Models {
      */
     folderPathContentCheck?: string | string[];
 
-    watchDepth?: Number;
     /**
      * default true
      */
@@ -50,13 +50,15 @@ export namespace Models {
      * default: false
      */
     notifyOnFileUnlink?: boolean;
-    ignoreFolderPatter?: string[];
-    allowedOnlyFileExt?: string[];
+
     /**
-     * useful when using **allowedOnlyFileExt**
+     * ignore glob folder pattern
+     * node_modules is always ignored
      */
-    additionallyAllowedFilesWithNames?: string[];
-    executeOutsideScenario?: boolean;
+    ignoreFolderPatter?: string[];
+    /**
+     * @deprecated
+     */
     subscribeOnlyFor?: CoreModels.FileExtension[];
   }
   //#endregion
