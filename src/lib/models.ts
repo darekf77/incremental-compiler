@@ -1,25 +1,7 @@
 //#region imports
-//#region @backend
-import { BaseClientCompiler } from './base-client-compiler.backend';
-//#endregion
 import { CoreModels } from 'tnp-core/src';
 //#endregion
 export namespace Models {
-
-  //#region helpers to override
-  // /**
-  //  * @deprecated
-  //  */
-  // export interface HelpersToOverride {
-  //   info: Function;
-  //   warn: Function;
-  //   error: Function;
-  //   log: Function;
-  //   runSyncOrAsync: Function;
-  //   compilationWrapper: Function;
-  // }
-  //#endregion
-
   //#region start and watch options
   export interface StartAndWatchOptions<INIT_PARAMS = any> {
     afterInitCallBack?: (initalParams?: INIT_PARAMS) => void;
@@ -56,9 +38,6 @@ export namespace Models {
      * node_modules is always ignored
      */
     ignoreFolderPatter?: string[];
-    /**
-     * @deprecated
-     */
     subscribeOnlyFor?: CoreModels.FileExtension[];
   }
   //#endregion

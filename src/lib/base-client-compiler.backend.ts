@@ -114,8 +114,25 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
   //#endregion
 
   protected onlySingleRun = true;
+
   //#region api methods / start
   /**
+   * do not override this
+   */
+  async runTask(
+    options?: { watch: boolean } & Models.StartAndWatchOptions<INITAL_PARAMS>,
+  ): Promise<BaseClientCompiler<INITAL_PARAMS>> {
+    if (options?.watch) {
+      await this.startAndWatch(options);
+    } else {
+      await this.start(options);
+    }
+    return this;
+  }
+
+  //#region api methods / start
+  /**
+   * @deprecated use runTask instead
    * Do not override this
    */
   public async start(
@@ -155,6 +172,7 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
 
   //#region api methods / start and watch
   /**
+   * @deprecated use runTask instead
    * Do not override this
    */
   public async startAndWatch(
