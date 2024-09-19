@@ -59,8 +59,7 @@
     "dateformat": "3.0.3",
     "fs-extra": "8.1.0",
     "glob": "7.1.2",
-    "tnp-helpers": "~18.0.10",
-    "typescript-class-helpers": "~18.0.11"
+    "tnp-helpers": "~18.0.10"
   },
   "private": false,
   "lastBuildTagHash": "699ba93c01f9fb01c21ea7c08c5fa1a34f8ae6fe",
@@ -339,6 +338,7 @@
     "typedoc": "0.26.5",
     "typedoc-plugin-markdown": "4.2.3",
     "typescript": "~5.5.4",
+    "typescript-class-helpers": "~18.0.11",
     "typescript-formatter": "~7.2.2",
     "underscore": "1.13.7",
     "uuid": "10.0.0",
