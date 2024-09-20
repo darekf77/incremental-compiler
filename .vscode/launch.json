@@ -7,12 +7,19 @@
       "name": "Debug/Start Server",
       "program": "${workspaceFolder}/run.js",
       "args": [
-        "port=4504",
+        "port=4507",
         "--ENVoverride=%7B%0A%20%20%20%20%22clientProjectName%22%3A%20%22incremental-compiler%22%0A%7D "
       ],
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js",
-        "!**/node_modules/**"
+        "!**/node_modules/**",
+        "/Users/dfilipiak/npm/taon-dev/tnp/src/../dist/**/*.js",
+        "/Users/dfilipiak/npm/taon-dev/tnp-config/src/../dist/**/*.js",
+        "/Users/dfilipiak/npm/taon-dev/tnp-core/src/../dist/**/*.js",
+        "/Users/dfilipiak/npm/taon-dev/tnp-helpers/src/../dist/**/*.js",
+        "/Users/dfilipiak/npm/cli-tools/navi-cli/src/../dist/**/*.js",
+        "/Users/dfilipiak/npm/cli-tools/p1-cli/src/../dist/**/*.js",
+        "/Users/dfilipiak/npm/taon-dev/taon/src/../dist/**/*.js"
       ],
       "runtimeArgs": [
         "--nolazy",
