@@ -2,10 +2,10 @@
 //#region @backend
 import { fg, fse, minimatch } from 'tnp-core/src';
 //#endregion
-import { path, _, glob, crossPlatformPath } from 'tnp-core/src';
+import { path, _, crossPlatformPath } from 'tnp-core/src';
 import { Helpers } from 'tnp-core/src';
 import { ChangeOfFile } from './change-of-file';
-import { BaseClientCompiler } from './base-client-compiler.backend';
+import { BaseClientCompiler } from './base-client-compiler';
 import { CoreModels } from 'tnp-core/src';
 import { COMPILER_POOLING } from './constants';
 import {
@@ -19,7 +19,7 @@ import { IncrementalWatcherEvents } from './incremental-watcher/incremental-watc
 //#endregion
 //#endregion
 
-const ignoreByDefault = ['**/node_modules/**/*.*','**/node_modules'];
+const ignoreByDefault = ['**/node_modules/**/*.*', '**/node_modules'];
 
 export class CompilerManager {
   //#region static
@@ -49,6 +49,7 @@ export class CompilerManager {
 
   //#region methods / sync init
   public async syncInit(client: BaseClientCompiler<any>, initalParams: any) {
+    //#region @backendFunc
     let files = [];
     if (_.isArray(client.folderPath) && client.folderPath.length > 0) {
       files = client.folderPath
@@ -100,11 +101,13 @@ export class CompilerManager {
     }
 
     await client.syncAction(files, initalParams);
+    //#endregion
   }
   //#endregion
 
   //#region methods / async init
   public async asyncInit(client: BaseClientCompiler<any>, initialParams: any) {
+    //#region @backendFunc
     // Helpers.log(`this.clients: ${this.clients.map(c => c.key).join(',')} `)
     // Helpers.log(`this.firstFoldersToWatch: ${this.firstFoldersToWatch}`);
 
@@ -133,6 +136,7 @@ export class CompilerManager {
     });
 
     watchers.push(watcher);
+    //#endregion
   }
 
   private async actionForAsyncEvent(
@@ -141,6 +145,7 @@ export class CompilerManager {
     client: BaseClientCompiler<any>,
     initalParams: any,
   ) {
+    //#region @backendFunc
     absoluteFilePath = crossPlatformPath(absoluteFilePath);
 
     if (event === 'addDir') {
@@ -193,23 +198,26 @@ export class CompilerManager {
     );
 
     // console.log('this.clients', this.clients.map(c => c.key))
+    //#endregion
   }
-
   //#endregion
 
   //#region methods / add client
   public addClient(client: BaseClientCompiler<any>) {
+    //#region @backendFunc
     // console.log(`Cilent added "${client.key}" folders`, client.folderPath)
     const existed = this.clients.find(c => c === client);
     if (existed) {
       Helpers.log(`Task "${client.taskName}" alread added`); // TODO @LAST
     }
     this.clients.push(client);
+    //#endregion
   }
   //#endregion
 
   //#region private methods / prevent already inited
   private preventAlreadyInited() {
+    //#region @backendFunc
     if (this.inited) {
       Helpers.error(
         `Please init Compiler Manager only once:
@@ -219,6 +227,7 @@ export class CompilerManager {
         true,
       );
     }
+    //#endregion
   }
   //#endregion
 
@@ -227,6 +236,7 @@ export class CompilerManager {
     absFilePath: string,
     client: BaseClientCompiler<any>,
   ) {
+    //#region @backendFunc
     const fileShouldBeCached = !_.isUndefined(
       client.folderPathContentCheck.find(patterFolder => {
         return crossPlatformPath(absFilePath).startsWith(
@@ -236,6 +246,7 @@ export class CompilerManager {
     );
 
     return fileShouldBeCached;
+    //#endregion
   }
   //#endregion
 }

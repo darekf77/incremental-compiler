@@ -1,7 +1,10 @@
 //#region imports
-import { path, fse, _, crossPlatformPath } from 'tnp-core/src';
+//#region @backend
+import { fse } from 'tnp-core/src';
+//#endregion
+import { path, _, crossPlatformPath } from 'tnp-core/src';
 import { ChangeOfFile } from './change-of-file';
-import { CompilerManager } from './compiler-manager.backend';
+import { CompilerManager } from './compiler-manager';
 import { Models } from './models';
 import { Helpers } from 'tnp-core/src';
 import { CLI } from 'tnp-core/src';
@@ -18,7 +21,9 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
   public readonly taskName: string;
   public ignoreFolderPatter?: string[];
   public readonly notifyOnFileUnlink: boolean;
+  //#region @backend
   public compilationWrapper = Helpers.compilationWrapper;
+  //#endregion
   private pathResolve: boolean = false;
   private initedWithOptions = false;
   private __folderPath: string[] = [];
@@ -52,6 +57,7 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
     this.__folderPath = v;
   }
   public get folderPath(): string[] {
+    //#region @backendFunc
     if (!this.pathResolve) {
       this.pathResolve = true;
       this.__folderPath
@@ -68,12 +74,14 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
         .filter(f => !!f);
     }
     return this.__folderPath;
+    //#endregion
   }
   //#endregion
 
   //#endregion
 
   //#region constructor
+  //#region @backend
   constructor(options?: Models.BaseClientCompilerOptions) {
     if (_.isUndefined(options)) {
       this.initedWithOptions = false;
@@ -86,14 +94,14 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
     }
   }
   //#endregion
+  //#endregion
 
-  //#region api methods
-
-  //#region api methods / init options
+  //#region / init options
   /**
    * manually init options (when no passing object to constructor super() )
    */
   protected initOptions(options?: Models.BaseClientCompilerOptions) {
+    //#region @backendFunc
     if (this.initedWithOptions === true) {
       Helpers.warn(
         `[incremental-compiler] You can't reinit instance class again...` +
@@ -110,6 +118,7 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
     }
     this.initedWithOptions = true;
     this._init(options);
+    //#endregion
   }
   //#endregion
 
@@ -122,12 +131,14 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
   async runTask(
     options?: { watch: boolean } & Models.StartAndWatchOptions<INITAL_PARAMS>,
   ): Promise<BaseClientCompiler<INITAL_PARAMS>> {
+    //#region @backendFunc
     if (options?.watch) {
       await this.startAndWatch(options);
     } else {
       await this.start(options);
     }
     return this;
+    //#endregion
   }
 
   //#region api methods / start
@@ -138,6 +149,7 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
   public async start(
     options?: Models.StartOptions<INITAL_PARAMS>,
   ): Promise<BaseClientCompiler<INITAL_PARAMS>> {
+    //#region @backendFunc
     let { taskName, afterInitCallBack, initalParams } = options || {};
 
     CompilerManager.Instance.addClient(this);
@@ -167,6 +179,7 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
       });
     }
     return this;
+    //#endregion
   }
   //#endregion
 
@@ -178,6 +191,7 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
   public async startAndWatch(
     options?: Models.StartAndWatchOptions<INITAL_PARAMS>,
   ): Promise<BaseClientCompiler<INITAL_PARAMS>> {
+    //#region @backendFunc
     let { taskName, watchOnly, initalParams } = options || {};
     this.onlySingleRun = false;
     if (!this.initedWithOptions) {
@@ -216,6 +230,7 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
       await this.start(options);
     }
     return this;
+    //#endregion
   }
   //#endregion
 
@@ -252,6 +267,7 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
 
   //#region private methods / _init
   private _init(options?: Models.BaseClientCompilerOptions) {
+    //#region @backendFunc
     if (!_.isArray(options.subscribeOnlyFor)) {
       options.subscribeOnlyFor = [];
     }
@@ -287,6 +303,7 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
     }
     // console.log('ASSIGNE', options)
     Object.assign(this, options);
+    //#endregion
   }
   //#endregion
 
@@ -300,6 +317,7 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
   //#endregion
 
   filesToWatch() {
+    //#region @backendFunc
     const folders: string[] = [];
     // this.clients.forEach(c => {
     [this].forEach(c => {
@@ -313,13 +331,16 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
       });
     });
     return _.cloneDeep(folders);
+    //#endregion
   }
 
   private mapForWatching(c: string): string[] {
+    //#region @backendFunc
     if (fse.existsSync(c) && fse.lstatSync(c).isDirectory()) {
       return [c, `${c}/**/*.*`];
     }
     return [c];
+    //#endregion
   }
 
   //#endregion

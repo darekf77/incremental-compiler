@@ -59,7 +59,7 @@
     "dateformat": "3.0.3",
     "fs-extra": "8.1.0",
     "glob": "7.1.2",
-    "tnp-helpers": "~18.0.10"
+    "tnp-core": "~18.0.34"
   },
   "private": false,
   "lastBuildTagHash": "699ba93c01f9fb01c21ea7c08c5fa1a34f8ae6fe",
@@ -325,7 +325,7 @@
     "threads": "1.7.0",
     "tnp": "~18.0.10",
     "tnp-config": "~18.0.12",
-    "tnp-core": "~18.0.34",
+    "tnp-helpers": "~18.0.10",
     "tnp-models": "~18.0.11",
     "ts-debug": "1.3.0",
     "ts-json-schema-generator": "2.3.0-next.5",

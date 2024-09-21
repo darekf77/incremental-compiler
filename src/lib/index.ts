@@ -1,15 +1,15 @@
 import * as models from './models';
 export * from './change-of-file';
-//#region @backend
-export * from './incremental-watcher';
-export * from './compiler-manager.backend';
-export * from './base-client-compiler.backend';
 export * from './constants';
-
-import * as incBase from './base-client-compiler.backend';
+export * from './incremental-watcher';
 import * as change from './change-of-file';
-import { _ } from 'tnp-core/src';
+export * from './base-client-compiler';
+import * as incBase from './base-client-compiler';
+//#region @backend
+export * from './compiler-manager';
+//#endregion
 
+import { _ } from 'tnp-core/src';
 /**
  * Template for watcher client:
  *
@@ -26,6 +26,4 @@ export namespace IncCompiler {
   export import Models = models.Models;
   export import Base = incBase.BaseClientCompiler;
   export import Change = change.ChangeOfFile;
-
 }
-//#endregion
