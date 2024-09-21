@@ -3,7 +3,7 @@ import {
   // chokidar,
   crossPlatformPath, fse, glob, _
 } from "tnp-core";
-import { Helpers } from 'tnp-helpers/src';
+import { Helpers, Utils } from 'tnp-core/src';
 import { Log, Level } from 'ng2-logger/src';
 import { IncrementalWatcherInstance } from "./incremental-watcher-instance";
 import { IncrementalWatcherAllEvents, Listener, ListenerForSingleEvent } from './incremental-watcher-events';
@@ -189,7 +189,7 @@ export class ParcelWatcherAdapter
       ...this.pathes,
       ...(Array.isArray(pathToAdd) ? pathToAdd : [pathToAdd])
     ];
-    this.pathes = Helpers.arrays.uniqArray(
+    this.pathes = Utils.uniqArray(
       this.pathes
         .map(a => {
           const replaced = crossPlatformPath(a)

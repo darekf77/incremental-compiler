@@ -3,8 +3,8 @@
 import { fg, fse, minimatch } from 'tnp-core/src';
 //#endregion
 import { path, _, glob, crossPlatformPath } from 'tnp-core/src';
-import { Helpers } from 'tnp-helpers/src';
-import { ChangeOfFile } from './change-of-file.backend';
+import { Helpers } from 'tnp-core/src';
+import { ChangeOfFile } from './change-of-file';
 import { BaseClientCompiler } from './base-client-compiler.backend';
 import { CoreModels } from 'tnp-core/src';
 import { COMPILER_POOLING } from './constants';
@@ -59,7 +59,7 @@ export class CompilerManager {
             fse.existsSync(folderOrFileB) &&
             fse.lstatSync(folderOrFileB).isDirectory()
           ) {
-            debugger;
+            // debugger;
             const globPath = `${folderOrFileB}/**/*.*`;
             const ignore = [...ignoreByDefault, ...client.ignoreFolderPatter];
             // console.log({  ignore });

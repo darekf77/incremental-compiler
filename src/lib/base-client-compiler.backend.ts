@@ -1,6 +1,6 @@
 //#region imports
 import { path, fse, _, crossPlatformPath } from 'tnp-core/src';
-import { ChangeOfFile } from './change-of-file.backend';
+import { ChangeOfFile } from './change-of-file';
 import { CompilerManager } from './compiler-manager.backend';
 import { Models } from './models';
 import { Helpers } from 'tnp-core/src';
