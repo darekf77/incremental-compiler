@@ -6,6 +6,9 @@ export namespace Models {
   export interface StartAndWatchOptions<INIT_PARAMS = any> {
     afterInitCallBack?: (initalParams?: INIT_PARAMS) => void;
     watchOnly?: boolean;
+    /**
+     * override task name
+     */
     taskName?: string
     initalParams?: INIT_PARAMS;
   }
