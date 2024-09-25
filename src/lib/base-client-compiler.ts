@@ -29,6 +29,7 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
   private __folderPath: string[] = [];
   public lastAsyncFiles: string[] = [];
   private _folderPathContentCheck: string[] = [];
+  isWatchCompilation: boolean = false;
 
   //#endregion
 
@@ -129,9 +130,10 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
    * do not override this
    */
   async runTask(
-    options?: { watch: boolean } & Models.StartAndWatchOptions<INITAL_PARAMS>,
+    options?: { watch?: boolean } & Models.StartAndWatchOptions<INITAL_PARAMS>,
   ): Promise<BaseClientCompiler<INITAL_PARAMS>> {
     //#region @backendFunc
+    this.isWatchCompilation = options?.watch;
     if (options?.watch) {
       await this.startAndWatch(options);
     } else {
