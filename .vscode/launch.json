@@ -13,15 +13,8 @@
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js",
         "!**/node_modules/**",
-        "/Users/dfilipiak/npm/taon-dev/incremental-compiler/src/../dist/**/*.js",
-        "/Users/dfilipiak/npm/taon-dev/tnp/src/../dist/**/*.js",
-        "/Users/dfilipiak/npm/taon-dev/tnp-config/src/../dist/**/*.js",
-        "/Users/dfilipiak/npm/taon-dev/tnp-core/src/../dist/**/*.js",
-        "/Users/dfilipiak/npm/taon-dev/tnp-helpers/src/../dist/**/*.js",
-        "/Users/dfilipiak/npm/cli-tools/navi-cli/src/../dist/**/*.js",
-        "/Users/dfilipiak/npm/cli-tools/cez-cli/src/../dist/**/*.js",
-        "/Users/dfilipiak/npm/cli-tools/p1-cli/src/../dist/**/*.js",
-        "/Users/dfilipiak/npm/taon-dev/taon/src/../dist/**/*.js"
+        "c:/Users/darek/projects/npm/taon-dev/tnp-core/src/../dist/**/*.js",
+        "c:/Users/darek/projects/npm/taon-dev/tnp-helpers/src/../dist/**/*.js"
       ],
       "runtimeArgs": [
         "--nolazy",
