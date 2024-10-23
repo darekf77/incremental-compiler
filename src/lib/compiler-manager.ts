@@ -7,7 +7,7 @@ import { Helpers } from 'tnp-core/src';
 import { ChangeOfFile } from './change-of-file';
 import { BaseClientCompiler } from './base-client-compiler';
 import { CoreModels } from 'tnp-core/src';
-import { COMPILER_POOLING } from './constants';
+import { COMPILER_POOLING, IGNORE_BY_DEFAULT } from './constants';
 import {
   IncrementalWatcherInstance,
   incrementalWatcher,
@@ -19,7 +19,7 @@ import { IncrementalWatcherEvents } from './incremental-watcher/incremental-watc
 //#endregion
 //#endregion
 
-const ignoreByDefault = ['**/node_modules/**/*.*', '**/node_modules'];
+
 
 export class CompilerManager {
   //#region static
@@ -62,7 +62,7 @@ export class CompilerManager {
           ) {
             // debugger;
             const globPath = `${folderOrFileB}/**/*.*`;
-            const ignore = [...ignoreByDefault, ...client.ignoreFolderPatter];
+            const ignore = [...IGNORE_BY_DEFAULT, ...client.ignoreFolderPatter];
             // console.log({  ignore });
             filesFromB = fg.sync(globPath, {
               // ! TODO QUICK_FIX for v18 @LAST
@@ -114,7 +114,7 @@ export class CompilerManager {
     const watchers = [] as IncrementalWatcherInstance[];
 
     // console.info('FILEESS ADDED TO WATCHER INITT', this.currentObservedFolder)
-    const ignored = [...ignoreByDefault, ...client.ignoreFolderPatter];
+    const ignored = [...IGNORE_BY_DEFAULT, ...client.ignoreFolderPatter];
     // console.log('ignored async ', ignored);
     const watcher = (
       await incrementalWatcher(client.filesToWatch(), {

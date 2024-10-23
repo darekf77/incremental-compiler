@@ -7,3 +7,10 @@ export const COMPILER_POOLING = (process.platform === 'win32') ? {
 // console.log({
 //   COMPILER_POOLING
 // })
+
+export const IGNORE_BY_DEFAULT = [
+  '**/node_modules/**/*.*',
+  '**/node_modules',
+  '**/.git/**/*.*',
+  '**/.git',
+];

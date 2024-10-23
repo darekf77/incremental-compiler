@@ -16,6 +16,7 @@ import * as fs from "fs";
 import anymatch, { Matcher, Tester } from 'anymatch';
 import { IOptions } from "glob";
 import { IncrementalWatcherOptions } from "./incremental-watcher-options";
+import { IGNORE_BY_DEFAULT } from "../constants";
 
 const log = Log.create('ParcelWatcherAdapter',
   Level.__NOTHING
@@ -238,7 +239,7 @@ export class ParcelWatcherAdapter
     // log.info(`1. glob search "${globPath}"`);
     const options: IOptions = {
       absolute: true,
-      ignore: ['**/node_modules/**',
+      ignore: [...IGNORE_BY_DEFAULT,
         // '**/tmp -*/**'
       ],
       // symlinks: this.options.followSymlinks,

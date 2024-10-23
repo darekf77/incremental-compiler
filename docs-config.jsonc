@@ -1,0 +1,9 @@
+{
+  "site_name": "incremental-compiler",
+  "externalDocs": {
+    "mdfiles": [],
+    "projects": []
+  },
+  "omitFilesPatters": [],
+  "priorityOrder": []
+}
