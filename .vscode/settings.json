@@ -49,10 +49,6 @@
     "**/devDependencies.json": true,
     "**/package.json": true,
     "**/logo.svg": true,
-    ".firedev": true,
-    ".taon": true,
-    ".tnp": true,
-    ".": true,
     "**/*.filetemplate": true,
     "**/tsconfig.*": true,
     "**/tslint.*": true,
@@ -67,25 +63,21 @@
     "**/karma.conf.js": true,
     "**/docs-config.schema.json": true
   },
-
   "workbench.colorCustomizations": {
     "activityBar.background": "#591a66a9",
     "activityBar.foreground": "#000000",
     "statusBar.debuggingBackground": "#591a66a9",
     "statusBar.background": "#591a66a9"
   },
-
   "editor.rulers": [
     80,
     120
   ],
-
   "html.format.wrapAttributes": "force-aligned",
   "workbench.colorTheme": "Default Light+",
   "tslint.autoFixOnSave": false,
   "eslint.enable": true,
   "tslint.enable": false,
-
   "search.exclude": {
     "docs": true,
     "projects": true,
@@ -116,47 +108,38 @@
     "**/.tnp": true,
     "**/.": true
   },
-
   "[typescriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": false
   },
-
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": false
   },
-
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": false
   },
-
   "[json5]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": false
   },
-
   "[scss]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": false
   },
-
   "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": false
   },
-
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": false
   },
-
   "[typescript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": false
   },
-
   "eslint.migration.2_x": "off",
   "prettier.enable": true,
   "editor.suggest.snippetsPreventQuickSuggestions": false,
@@ -165,15 +148,16 @@
   "prettier.endOfLine": "auto",
   "prettier.prettierPath": "./node_modules/prettier",
   "search.useIgnoreFiles": false,
-
   "search.include": [
     "**/src/**"
   ],
-
   "window.title": "npm/taon-dev/incremental-compiler (taon-incremental-watcher) [ ${activeEditorShort} ]",
-
-  "json.schemas": [{
-    "fileMatch": ["/docs-config.jsonc"],
-    "url": "./docs-config.schema.json"
-  }]
+  "json.schemas": [
+    {
+      "fileMatch": [
+        "/docs-config.jsonc"
+      ],
+      "url": "./docs-config.schema.json"
+    }
+  ]
 }

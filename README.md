@@ -1,13 +1,9 @@
 # INCREMENTAL COMPILER
 
-- lib for any kind incremental compilers, files watchers.. 
-- based on excellent https://github.com/paulmillr/chokidar
+A library for any kind of incremental compilers and file watchers, based on the excellent Chokidar.
 
-## Example use case
+## Example Use Case
 
-- You want to call some function for each file in you folder "src" in you project.
-- After you call this function for each file... you are watching this files and 
-for each file change in "src", you are calling again function for this particular file
+You want to call a specific function for each file in your "src" folder within your project.
+After calling this function for each file, you set up watchers on those files. For each change in a file in "src," the function is called again for that particular file.
 
-
-### If you have many "files watchers" with "increamntal-compiler" you can create scenario ( IncCompiler.init(...)  ) and prevent any kind of "race coditions"
