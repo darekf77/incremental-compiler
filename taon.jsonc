@@ -46,5 +46,6 @@
   "private": false,
   "main": "index.js",
   "workerPlugins": {},
-  "additionalNpmNames": ["taon-incremental-watcher"]
+  "additionalNpmNames": ["taon-incremental-watcher"],
+  "packageJsonOverride": {}
 }

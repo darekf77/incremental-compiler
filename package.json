@@ -45,7 +45,8 @@
     "workerPlugins": {},
     "additionalNpmNames": [
       "taon-incremental-watcher"
-    ]
+    ],
+    "packageJsonOverride": {}
   },
   "name": "incremental-compiler",
   "version": "18.0.21",
