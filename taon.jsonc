@@ -1,50 +1,25 @@
 {
+  "type": "isomorphic-lib",
+  "version": "v18",
+
+  "dependenciesNamesForNpmLib": [
+    "@types/glob",
+    "glob",
+    "fs-extra",
+    "@types/fs-extra",
+    "chokidar",
+    "@types/chokidar",
+    "dateformat",
+    "@types/dateformat",
+    "tnp-core"
+  ],
+
+  "additionalNpmNames": ["taon-incremental-watcher"],
+  "isCoreProject": false,
   "resources": ["README.md"],
 
-  "overrided": {
-    "ignoreDepsPattern": [],
-    "includeAsDev": [],
-
-    "includeOnly": [
-      "@types/glob",
-      "glob",
-      "fs-extra",
-      "@types/fs-extra",
-      "chokidar",
-      "@types/chokidar",
-      "dateformat",
-      "@types/dateformat",
-      "tnp-core"
-    ],
-
-    "dependencies": {},
-    "linkedFolders": [],
-    "npmFixes": []
-  },
-
-  "smartContainerBuildTarget": "",
-  "linkedRepos": [],
-
-  "libReleaseOptions": {
-    "nodts": false,
-    "obscure": false,
-    "ugly": false,
-    "includeNodeModules": false,
-    "cliBuildNoDts": false,
-    "cliBuildObscure": false,
-    "cliBuildIncludeNodeModules": false,
-    "cliBuildUglify": false
-  },
-
-  "smartContainerTarget": "",
-  "type": "isomorphic-lib",
-  "isCoreProject": false,
-  "useFramework": false,
-  "version": "v18",
-  "isGenerated": false,
-  "license": "MIT",
-  "private": false,
-  "main": "index.js",
-  "workerPlugins": {},
-  "additionalNpmNames": ["taon-incremental-watcher"]
+  "packageJsonOverride": {
+    "license": "MIT",
+    "private": false
+  }
 }
