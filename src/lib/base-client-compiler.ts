@@ -11,7 +11,7 @@ import { CLI } from 'tnp-core/src';
 import { CoreModels } from 'tnp-core/src';
 //#endregion
 
-export class BaseClientCompiler<INITAL_PARAMS = any>
+export class BaseClientCompiler<INITIAL_PARAMS = any>
   implements Models.BaseClientCompilerOptions
 {
   //#region fields
@@ -130,8 +130,8 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
    * do not override this
    */
   async runTask(
-    options?: { watch?: boolean } & Models.StartAndWatchOptions<INITAL_PARAMS>,
-  ): Promise<BaseClientCompiler<INITAL_PARAMS>> {
+    options?: { watch?: boolean } & Models.StartAndWatchOptions<INITIAL_PARAMS>,
+  ): Promise<BaseClientCompiler<INITIAL_PARAMS>> {
     //#region @backendFunc
     this.isWatchCompilation = options?.watch;
     if (options?.watch) {
@@ -149,10 +149,10 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
    * Do not override this
    */
   public async start(
-    options?: Models.StartOptions<INITAL_PARAMS>,
-  ): Promise<BaseClientCompiler<INITAL_PARAMS>> {
+    options?: Models.StartOptions<INITIAL_PARAMS>,
+  ): Promise<BaseClientCompiler<INITIAL_PARAMS>> {
     //#region @backendFunc
-    let { taskName, afterInitCallBack, initalParams } = options || {};
+    let { taskName, afterInitCallBack, initialParams } = options || {};
 
     CompilerManager.Instance.addClient(this);
     if (!this.initedWithOptions) {
@@ -168,7 +168,7 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
     this.taskName = taskName;
     await this.compilationWrapper(
       async () => {
-        await CompilerManager.Instance.syncInit(this, initalParams);
+        await CompilerManager.Instance.syncInit(this, initialParams);
       },
       `${CLI.chalk.green('sync action')} for ${taskName}`,
       'Event:',
@@ -177,7 +177,7 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
     if (_.isFunction(afterInitCallBack)) {
       await Helpers.runSyncOrAsync({
         functionFn: afterInitCallBack,
-        arrayOfParams: [initalParams],
+        arrayOfParams: [initialParams],
       });
     }
     return this;
@@ -191,10 +191,10 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
    * Do not override this
    */
   public async startAndWatch(
-    options?: Models.StartAndWatchOptions<INITAL_PARAMS>,
-  ): Promise<BaseClientCompiler<INITAL_PARAMS>> {
+    options?: Models.StartAndWatchOptions<INITIAL_PARAMS>,
+  ): Promise<BaseClientCompiler<INITIAL_PARAMS>> {
     //#region @backendFunc
-    let { taskName, watchOnly, initalParams } = options || {};
+    let { taskName, watchOnly, initialParams } = options || {};
     this.onlySingleRun = false;
     if (!this.initedWithOptions) {
       Helpers.error(
@@ -220,13 +220,13 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
       if (_.isFunction(this.preAsyncAction)) {
         await this.compilationWrapper(
           async () => {
-            await this.preAsyncAction((initalParams || {}) as any);
+            await this.preAsyncAction((initialParams || {}) as any);
           },
           `${CLI.chalk.green('pre-async action')} for ${taskName}`,
           'Event:',
         );
       }
-      await CompilerManager.Instance.asyncInit(this, initalParams || {});
+      await CompilerManager.Instance.asyncInit(this, initialParams || {});
     } else {
       Helpers.log(`No action for task: ${taskName}.. starting task`);
       await this.start(options);
@@ -244,20 +244,20 @@ export class BaseClientCompiler<INITAL_PARAMS = any>
    */
   public syncAction(
     absolteFilesPathes?: string[],
-    initalParams?: INITAL_PARAMS,
+    initialParams?: INITIAL_PARAMS,
   ): Promise<void> {
     return void 0;
   }
   //#endregion
 
   //#region api methods / pre async action
-  public async preAsyncAction(initalParams?: INITAL_PARAMS): Promise<void> {}
+  public async preAsyncAction(initialParams?: INITIAL_PARAMS): Promise<void> {}
   //#endregion
 
   //#region api methods / async action
   public asyncAction(
     asyncEvents: ChangeOfFile,
-    initalParams?: INITAL_PARAMS,
+    initialParams?: INITIAL_PARAMS,
   ): Promise<void> {
     return void 0;
   }

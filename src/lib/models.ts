@@ -4,13 +4,13 @@ import { CoreModels } from 'tnp-core/src';
 export namespace Models {
   //#region start and watch options
   export interface StartAndWatchOptions<INIT_PARAMS = any> {
-    afterInitCallBack?: (initalParams?: INIT_PARAMS) => void;
+    afterInitCallBack?: (initialParams?: INIT_PARAMS) => void;
     watchOnly?: boolean;
     /**
      * override task name
      */
     taskName?: string
-    initalParams?: INIT_PARAMS;
+    initialParams?: INIT_PARAMS;
   }
   export type StartOptions<T = any> = Omit<StartAndWatchOptions<T>, 'watchOnly'>;
   //#endregion

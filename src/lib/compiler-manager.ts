@@ -48,7 +48,7 @@ export class CompilerManager {
   //#endregion
 
   //#region methods / sync init
-  public async syncInit(client: BaseClientCompiler<any>, initalParams: any) {
+  public async syncInit(client: BaseClientCompiler<any>, initialParams: any) {
     //#region @backendFunc
     let files = [];
     if (_.isArray(client.folderPath) && client.folderPath.length > 0) {
@@ -100,7 +100,7 @@ export class CompilerManager {
       }
     }
 
-    await client.syncAction(files, initalParams);
+    await client.syncAction(files, initialParams);
     //#endregion
   }
   //#endregion
@@ -143,7 +143,7 @@ export class CompilerManager {
     event: IncrementalWatcherEvents,
     absoluteFilePath: string,
     client: BaseClientCompiler<any>,
-    initalParams: any,
+    initialParams: any,
   ) {
     //#region @backendFunc
     absoluteFilePath = crossPlatformPath(absoluteFilePath);
@@ -191,7 +191,7 @@ export class CompilerManager {
       if (this.asyncEventScenario) {
         await this.asyncEventScenario(change);
       }
-      await client.asyncAction(change, initalParams);
+      await client.asyncAction(change, initialParams);
     }
     client.lastAsyncFiles = client.lastAsyncFiles.filter(
       ef => ef !== absoluteFilePath,
