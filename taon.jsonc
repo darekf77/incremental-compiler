@@ -1,5 +1,7 @@
 {
+  "resources": ["README.md"],
   "type": "isomorphic-lib",
+
   "version": "v18",
 
   "dependenciesNamesForNpmLib": [
@@ -13,10 +15,8 @@
     "@types/dateformat",
     "tnp-core"
   ],
-
   "additionalNpmNames": ["taon-incremental-watcher"],
   "isCoreProject": false,
-  "resources": ["README.md"],
 
   "packageJsonOverride": {
     "author": "Dariusz Filipiak",
