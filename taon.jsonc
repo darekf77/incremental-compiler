@@ -19,6 +19,7 @@
   "resources": ["README.md"],
 
   "packageJsonOverride": {
+    "author": "Dariusz Filipiak",
     "license": "MIT",
     "private": false
   }
