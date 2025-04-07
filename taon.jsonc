@@ -15,6 +15,11 @@
   ],
 
   "additionalNpmNames": ["taon-incremental-watcher"],
+
+  "autoReleaseConfigAllowedItems": [{
+    "artifactName": "npm-lib-and-cli-tool"
+  }],
+
   "isCoreProject": false,
   "resources": ["README.md"],
 
