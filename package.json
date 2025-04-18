@@ -1,6 +1,6 @@
 {
   "name": "incremental-compiler",
-  "version": "18.0.29",
+  "version": "19.0.0",
   "license": "MIT",
   "author": "Dariusz Filipiak",
   "private": false,
