@@ -1,6 +1,6 @@
 THIS FILE IS GENERATED - DO NOT MODIFY
 
-Assets from this folder are being shipped with this npm package (incremental-compiler@19.0.4)
+Assets from this folder are being shipped with this npm package (incremental-compiler)
 created from this project.
 
 THIS FILE IS GENERATED - DO NOT MODIFY
