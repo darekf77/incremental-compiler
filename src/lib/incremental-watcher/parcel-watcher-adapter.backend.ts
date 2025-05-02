@@ -2,7 +2,7 @@
 import {
   // chokidar,
   crossPlatformPath, fse, glob, _
-} from "tnp-core";
+} from "tnp-core/src";
 import { Helpers, Utils } from 'tnp-core/src';
 import { Log, Level } from 'ng2-logger/src';
 import { IncrementalWatcherInstance } from "./incremental-watcher-instance";

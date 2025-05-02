@@ -4,10 +4,16 @@
     "strictNullChecks": false,
     "rootDir": "./src",
     "paths": {
-      "incremental-compiler": [
+      "@lib": [
         "./src/lib"
       ],
-      "incremental-compiler/*": [
+      "@lib/*": [
+        "./src/lib/*"
+      ],
+      "incremental-compiler/src": [
+        "./src/lib"
+      ],
+      "incremental-compiler/src/*": [
         "./src/lib/*"
       ]
     }
