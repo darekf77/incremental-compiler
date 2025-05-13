@@ -1,14 +1,13 @@
 //#region imports
-//#region @backend
-import { fse } from 'tnp-core/src';
-//#endregion
+import { fse } from 'tnp-core/src'; // @backend
 import { path, _, crossPlatformPath } from 'tnp-core/src';
-import { ChangeOfFile } from './change-of-file';
-import { CompilerManager } from './compiler-manager';
-import { Models } from './models';
 import { Helpers } from 'tnp-core/src';
 import { CLI } from 'tnp-core/src';
 import { CoreModels } from 'tnp-core/src';
+
+import { ChangeOfFile } from './change-of-file';
+import { CompilerManager } from './compiler-manager';
+import { Models } from './models';
 //#endregion
 
 export class BaseClientCompiler<INITIAL_PARAMS = any>
@@ -19,13 +18,15 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
   public readonly subscribeOnlyFor: CoreModels.FileExtension[] = [];
   public readonly executeOutsideScenario: boolean;
   public readonly taskName: string;
-  public ignoreFolderPatter?: string[];
   public readonly notifyOnFileUnlink: boolean;
+
+  protected onlySingleRun = true;
+  public ignoreFolderPatter?: string[];
   //#region @backend
   public compilationWrapper = Helpers.compilationWrapper;
   //#endregion
   private pathResolve: boolean = false;
-  private initedWithOptions = false;
+  private isInitedWithOptions: boolean = false;
   private __folderPath: string[] = [];
   public lastAsyncFiles: string[] = [];
   private _folderPathContentCheck: string[] = [];
@@ -34,12 +35,6 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
   //#endregion
 
   //#region getters & setteres
-
-  //#region getters & setteres / is inited
-  get isInited() {
-    return this.initedWithOptions;
-  }
-  //#endregion
 
   //#region getters & setteres / folder path content check
   get folderPathContentCheck() {
@@ -85,12 +80,12 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
   //#region @backend
   constructor(options?: Models.BaseClientCompilerOptions) {
     if (_.isUndefined(options)) {
-      this.initedWithOptions = false;
+      this.isInitedWithOptions = false;
       Helpers.log(
         '[incremental-compiler] Compiler class instace without init options',
       );
     } else {
-      this.initedWithOptions = true;
+      this.isInitedWithOptions = true;
       this._init(options);
     }
   }
@@ -103,11 +98,9 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
    */
   protected initOptions(options?: Models.BaseClientCompilerOptions) {
     //#region @backendFunc
-    if (this.initedWithOptions === true) {
-      Helpers.warn(
-        `[incremental-compiler] You can't reinit instance class again...` +
-          ` (after reiniting in constructor super(....))`,
-        true,
+    if (this.isInitedWithOptions === true) {
+      Helpers.logWarn(
+        `[incremental-compiler] You are reinit instance class again [task name: "${options?.taskName}"]`,
       );
     }
     if (!options) {
@@ -117,13 +110,11 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
         true,
       );
     }
-    this.initedWithOptions = true;
+    this.isInitedWithOptions = true;
     this._init(options);
     //#endregion
   }
   //#endregion
-
-  protected onlySingleRun = true;
 
   //#region api methods / start
   /**
@@ -155,7 +146,7 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
     let { taskName, afterInitCallBack, initialParams } = options || {};
 
     CompilerManager.Instance.addClient(this);
-    if (!this.initedWithOptions) {
+    if (!this.isInitedWithOptions) {
       Helpers.error(
         `[BaseClientCompiler] Please init client class intance with options`,
         false,
@@ -196,7 +187,7 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
     //#region @backendFunc
     let { taskName, watchOnly, initialParams } = options || {};
     this.onlySingleRun = false;
-    if (!this.initedWithOptions) {
+    if (!this.isInitedWithOptions) {
       Helpers.error(
         `[BaseClientCompiler] Please init client class intance with options`,
         false,
