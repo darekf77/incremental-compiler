@@ -1,6 +1,6 @@
 {
   "name": "incremental-compiler",
-  "version": "19.0.17",
+  "version": "19.0.18",
   "license": "MIT",
   "author": "Dariusz Filipiak",
   "private": false,
@@ -326,5 +326,6 @@
     "yup": "~1.0.0-beta.8",
     "zone.js": "~0.13.0"
   },
+  "main": "dist/app.electron.js",
   "bin": {}
 }
