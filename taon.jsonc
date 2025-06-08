@@ -15,6 +15,7 @@
   ],
 
   "additionalNpmNames": ["taon-incremental-watcher"],
+  "appId": "com.domain.example.incremental-compiler",
 
   "autoReleaseConfigAllowedItems": [{
     "artifactName": "npm-lib-and-cli-tool"
@@ -27,7 +28,7 @@
     "author": "Dariusz Filipiak",
     "license": "MIT",
     "private": false,
-
-    "scripts": {}
+    "scripts": {},
+    "description": "Description for incremental-compiler. Hello world!"
   }
 }
