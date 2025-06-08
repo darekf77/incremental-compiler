@@ -26,9 +26,9 @@
 
   "packageJsonOverride": {
     "author": "Dariusz Filipiak",
+    "description": "Description for incremental-compiler. Hello world!",
     "license": "MIT",
     "private": false,
-    "scripts": {},
-    "description": "Description for incremental-compiler. Hello world!"
+    "scripts": {}
   }
 }
