@@ -1,6 +1,6 @@
 //#region imports
 //#region @backend
-import { fg, fse, minimatch } from 'tnp-core/src';
+import { fg, fse } from 'tnp-core/src';
 //#endregion
 import { path, _, crossPlatformPath } from 'tnp-core/src';
 import { Helpers } from 'tnp-core/src';
