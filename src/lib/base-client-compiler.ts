@@ -81,9 +81,14 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
   constructor(options?: Models.BaseClientCompilerOptions) {
     if (_.isUndefined(options)) {
       this.isInitedWithOptions = false;
-      Helpers.log(
-        '[incremental-compiler] Compiler class instace without init options',
-      );
+      // setTimeout(() => {
+      //   if (!this.isInitedWithOptions) {
+      //     Helpers.logInfo(
+      //       `[incremental-compiler] Compiler class instace without init option, task name: "${this.taskName}"
+      //     `,
+      //     );
+      //   }
+      // }, 1000);
     } else {
       this.isInitedWithOptions = true;
       this._init(options);
