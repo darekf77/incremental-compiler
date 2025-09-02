@@ -164,14 +164,14 @@ export class ParcelWatcherAdapter {
           fse.realpathSync(pathToCatalog),
         );
         if (!Helpers.isFolder(pathToCatalogFolder)) {
-          Helpers.warn(
+          Helpers.logWarn(
             `[incremental-compiler] link not to folder ${pathToCatalogFolder}`,
           );
           isFile = true;
         }
       }
       if (!Helpers.isFolder(pathToCatalog)) {
-        Helpers.warn(`[incremental-compiler] not a folder ${pathToCatalog}`);
+        Helpers.log(`[incremental-compiler] not a folder ${pathToCatalog}`);
         isFile = true;
       }
       if (isFile) {
