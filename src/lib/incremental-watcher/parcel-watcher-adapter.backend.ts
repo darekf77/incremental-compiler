@@ -171,7 +171,7 @@ export class ParcelWatcherAdapter {
         }
       }
       if (!Helpers.isFolder(pathToCatalog)) {
-        Helpers.log(`[incremental-compiler] not a folder ${pathToCatalog}`);
+        Helpers.logWarn(`[incremental-compiler] not a folder ${pathToCatalog}`);
         isFile = true;
       }
       if (isFile) {
