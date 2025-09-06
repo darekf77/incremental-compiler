@@ -16,17 +16,7 @@ export async function incrementalWatcher(
     watchOptions = {} as any;
   }
 
-  if (frameworkName === 'taon') {
-    // @ts-ignore
-    watchOptions.engine = 'chokidar';
-  } else {
-    // @ts-ignore
-    watchOptions.engine = '@parcel/watcher';
-  }
-
-  // // @LAST @parcel/watcher sometime does not work :
-  // watchOptions.engine = 'chokidar';
-  // watchOptions.engine = '@parcel/watcher';
+  watchOptions.engine = '@parcel/watcher'; // TODO hardcode for now
 
   Helpers.logInfo(`Using watcher: ${watchOptions.engine}`);
 
