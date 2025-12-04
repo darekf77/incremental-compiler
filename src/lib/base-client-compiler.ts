@@ -1,57 +1,61 @@
 //#region imports
 import { fse } from 'tnp-core/src'; // @backend
-import { path, _, crossPlatformPath } from 'tnp-core/src';
+import { path, _, crossPlatformPath, UtilsMessages } from 'tnp-core/src';
 import { Helpers } from 'tnp-core/src';
 import { CLI } from 'tnp-core/src';
 import { CoreModels } from 'tnp-core/src';
 
-import { ChangeOfFile } from './change-of-file';
 import { CompilerManager } from './compiler-manager';
-import { Models } from './models';
+import { mapForWatching } from './helpers';
+import { ChangeOfFile, IncrementalWatcherOptions } from './models';
+import {
+  BaseClientCompilerOptions,
+  StartAndWatchOptions,
+  StartOptions,
+} from './models';
 //#endregion
 
 export class BaseClientCompiler<INITIAL_PARAMS = any>
-  implements Models.BaseClientCompilerOptions
+  implements BaseClientCompilerOptions
 {
-  //#region fields
+  //#region fields & getters
   public readonly followSymlinks: boolean;
+
   public readonly subscribeOnlyFor: CoreModels.FileExtension[] = [];
+
   public readonly executeOutsideScenario: boolean;
+
   public readonly taskName: string;
+
+  public readonly engine: IncrementalWatcherOptions['engine'];
+
   public readonly notifyOnFileUnlink: boolean;
 
   protected onlySingleRun = true;
+
   public ignoreFolderPatter?: string[];
-  //#region @backend
-  public compilationWrapper = Helpers.compilationWrapper;
-  //#endregion
+
   private pathResolve: boolean = false;
+
   private isInitedWithOptions: boolean = false;
+
   private __folderPath: string[] = [];
+
   public lastAsyncFiles: string[] = [];
-  private _folderPathContentCheck: string[] = [];
-  isWatchCompilation: boolean = false;
 
-  //#endregion
+  public readonly isWatchCompilation: boolean = false;
 
-  //#region getters & setteres
+  public readonly folderPathContentCheck: string[] = [];
 
-  //#region getters & setteres / folder path content check
-  get folderPathContentCheck() {
-    return this._folderPathContentCheck;
-  }
-  private set folderPathContentCheck(v) {
-    this._folderPathContentCheck = v;
-  }
-  //#endregion
-
-  //#region getters & setteres / folder path
   public set folderPath(v) {
+    //#region @backend
     if (_.isString(v)) {
       v = [v];
     }
     this.__folderPath = v;
+    //#endregion
   }
+
   public get folderPath(): string[] {
     //#region @backendFunc
     if (!this.pathResolve) {
@@ -74,11 +78,9 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
   }
   //#endregion
 
-  //#endregion
-
   //#region constructor
   //#region @backend
-  constructor(options?: Models.BaseClientCompilerOptions) {
+  constructor(options?: BaseClientCompilerOptions) {
     if (_.isUndefined(options)) {
       this.isInitedWithOptions = false;
       // setTimeout(() => {
@@ -91,17 +93,17 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
       // }, 1000);
     } else {
       this.isInitedWithOptions = true;
-      this._init(options);
+      this.fixAndAssignOptions(options);
     }
   }
   //#endregion
   //#endregion
 
-  //#region / init options
+  //#region init options
   /**
    * manually init options (when no passing object to constructor super() )
    */
-  protected initOptions(options?: Models.BaseClientCompilerOptions) {
+  protected initOptions(options?: BaseClientCompilerOptions): void {
     //#region @backendFunc
     if (this.isInitedWithOptions === true) {
       Helpers.logWarn(
@@ -116,19 +118,20 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
       );
     }
     this.isInitedWithOptions = true;
-    this._init(options);
+    this.fixAndAssignOptions(options);
     //#endregion
   }
   //#endregion
 
-  //#region api methods / start
+  //#region run task
   /**
    * do not override this
    */
   async runTask(
-    options?: { watch?: boolean } & Models.StartAndWatchOptions<INITIAL_PARAMS>,
+    options?: { watch?: boolean } & StartAndWatchOptions<INITIAL_PARAMS>,
   ): Promise<BaseClientCompiler<INITIAL_PARAMS>> {
     //#region @backendFunc
+    // @ts-ignore
     this.isWatchCompilation = options?.watch;
     if (options?.watch) {
       await this.startAndWatch(options);
@@ -138,14 +141,15 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
     return this;
     //#endregion
   }
+  //#endregion
 
-  //#region api methods / start
+  //#region start
   /**
    * @deprecated use runTask instead
    * Do not override this
    */
   public async start(
-    options?: Models.StartOptions<INITIAL_PARAMS>,
+    options?: StartOptions<INITIAL_PARAMS>,
   ): Promise<BaseClientCompiler<INITIAL_PARAMS>> {
     //#region @backendFunc
     let { taskName, afterInitCallBack, initialParams } = options || {};
@@ -162,7 +166,7 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
     taskName = this.fixTaskName(taskName);
     // @ts-ignore
     this.taskName = taskName;
-    await this.compilationWrapper(
+    await UtilsMessages.compilationWrapper(
       async () => {
         await CompilerManager.Instance.syncInit(this, initialParams);
       },
@@ -181,13 +185,13 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
   }
   //#endregion
 
-  //#region api methods / start and watch
+  //#region start and watch
   /**
    * @deprecated use runTask instead
    * Do not override this
    */
   public async startAndWatch(
-    options?: Models.StartAndWatchOptions<INITIAL_PARAMS>,
+    options?: StartAndWatchOptions<INITIAL_PARAMS>,
   ): Promise<BaseClientCompiler<INITIAL_PARAMS>> {
     //#region @backendFunc
     let { taskName, watchOnly, initialParams } = options || {};
@@ -214,7 +218,7 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
         await this.start(options);
       }
       if (_.isFunction(this.preAsyncAction)) {
-        await this.compilationWrapper(
+        await UtilsMessages.compilationWrapper(
           async () => {
             await this.preAsyncAction((initialParams || {}) as any);
           },
@@ -232,7 +236,7 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
   }
   //#endregion
 
-  //#region api methods / sync action
+  //#region sync action
   /**
    *
    * @param absolteFilesPathes for each watched file
@@ -246,11 +250,11 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
   }
   //#endregion
 
-  //#region api methods / pre async action
+  //#region pre async action
   public async preAsyncAction(initialParams?: INITIAL_PARAMS): Promise<void> {}
   //#endregion
 
-  //#region api methods / async action
+  //#region async action
   public asyncAction(
     asyncEvents: ChangeOfFile,
     initialParams?: INITIAL_PARAMS,
@@ -259,12 +263,31 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
   }
   //#endregion
 
+  //#region get files to watch
+  public getFilesFolderPatternsToWatch(): string[] {
+    //#region @backendFunc
+    const folders: string[] = [];
+    // this.clients.forEach(c => {
+    [this].forEach(c => {
+      // console.log("c.folderPath", c.folderPath)
+      c.folderPath.forEach(folderPath => {
+        // console.log(`fp`, fp)
+        if (_.isString(folderPath) && !folders.includes(folderPath)) {
+          const mapped = mapForWatching(folderPath);
+          folders.push(...mapped);
+        }
+      });
+    });
+
+    return _.cloneDeep(folders);
+    //#endregion
+  }
   //#endregion
 
   //#region private methods
 
-  //#region private methods / _init
-  private _init(options?: Models.BaseClientCompilerOptions) {
+  //#region private methods / fix and assign options
+  private fixAndAssignOptions(options?: BaseClientCompilerOptions): void {
     //#region @backendFunc
     if (!_.isArray(options.subscribeOnlyFor)) {
       options.subscribeOnlyFor = [];
@@ -306,40 +329,13 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
   //#endregion
 
   //#region private methods / fix task name
-  private fixTaskName(taskName: string) {
+  private fixTaskName(taskName: string): string {
     if (!_.isString(taskName)) {
       taskName = `task "${this.taskName}"`;
     }
     return taskName;
   }
   //#endregion
-
-  filesToWatch() {
-    //#region @backendFunc
-    const folders: string[] = [];
-    // this.clients.forEach(c => {
-    [this].forEach(c => {
-      // console.log("c.folderPath", c.folderPath)
-      c.folderPath.forEach(folderPath => {
-        // console.log(`fp`, fp)
-        if (_.isString(folderPath) && !folders.includes(folderPath)) {
-          const mapped = this.mapForWatching(folderPath);
-          folders.push(...mapped);
-        }
-      });
-    });
-    return _.cloneDeep(folders);
-    //#endregion
-  }
-
-  private mapForWatching(c: string): string[] {
-    //#region @backendFunc
-    if (fse.existsSync(c) && fse.lstatSync(c).isDirectory()) {
-      return [c, `${c}/**/*.*`];
-    }
-    return [c];
-    //#endregion
-  }
 
   //#endregion
 }

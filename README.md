@@ -1,9 +1,50 @@
 # INCREMENTAL COMPILER
 
-A library for any kind of incremental compilers and file watchers, based on the excellent Chokidar.
+A library for any kind of incremental compilers and file watchers, based on @parcel/watcher and chokidar.
 
-## Example Use Case
+## API
 
-You want to call a specific function for each file in your "src" folder within your project.
-After calling this function for each file, you set up watchers on those files. For each change in a file in "src," the function is called again for that particular file.
+ 1. Incremental Compiler class **"IncCompiler"**
 
+
+```ts
+import { BaseClientCompiler,  BaseClientCompilerOptions } from 'incremental-compiler/src';
+
+export abstract class BaseCompilerForProject<
+  ADDITIONAL_DATA = any,
+  PROJECT extends BaseProject = BaseProject,
+> extends BaseClientCompiler<ADDITIONAL_DATA> {
+  
+  constructor(
+    public project: PROJECT,
+    options: BaseClientCompilerOptions,
+  ) {
+    super();    
+    this.initOptions(options);    
+  }
+}
+```
+2.  Incremental watcher object **"incrementalWatcher"**
+
+```ts
+import { incrementalWatcher } from 'incremental-compiler/src';
+const watcher = await incrementalWatcher(
+  [
+    this.project.pathFor(`environments/**/*.ts`),
+    this.project.pathFor(`env.ts`),
+  ],
+  {
+    name: 'Environment Config Watcher',
+    ignoreInitial: true,
+    followSymlinks: false,
+  },
+);
+watcher.on('all', async (event, filePath) => {
+  onChange();
+});
+```
+
+## Folders ALWAYS ignored
+
+- node_modules/
+- .git/
