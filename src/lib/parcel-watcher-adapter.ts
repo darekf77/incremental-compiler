@@ -1,6 +1,7 @@
 //#region imports
 import type { AsyncSubscription, Event } from '@parcel/watcher';
 import type parcelWatcher from '@parcel/watcher';
+import anymatch from 'anymatch';
 import type { IOptions } from 'glob';
 import { chokidar, fg, UtilsStringRegex } from 'tnp-core/src';
 import { crossPlatformPath, fse, glob, _ } from 'tnp-core/src';
@@ -156,14 +157,34 @@ export class ParcelWatcherAdapter
         const firstLevelLinks = Helpers.linksToFoldersFrom(
           pathToCatalog,
           false,
-        );
-        const firstLevelFolders = Helpers.foldersFrom(pathToCatalog).filter(
-          f => !firstLevelLinks.includes(f),
-        );
-        const secondLevelLinks = firstLevelFolders.reduce((a, b) => {
-          return a.concat(Helpers.linksToFoldersFrom(b, false));
-        }, []);
+        ).filter(f => {
+          const exclude = anymatch(this.ignore, f);
+          return !exclude;
+        });
+
+        const firstLevelFolders = Helpers.foldersFrom(pathToCatalog)
+          .filter(f => !firstLevelLinks.includes(f))
+          .filter(f => {
+            const exclude = anymatch(this.ignore, f);
+            return !exclude;
+          });
+
+        const secondLevelLinks = firstLevelFolders
+          .reduce((a, b) => {
+            return a.concat(Helpers.linksToFoldersFrom(b, false));
+          }, [])
+          .filter(f => {
+            const exclude = anymatch(this.ignore, f);
+            return !exclude;
+          });
+
         const linksToWatch = [...firstLevelLinks, ...secondLevelLinks];
+
+        // console.log({
+        //   ignore: this.ignore,
+        //   pathToCatalog,
+        //   linksToWatch,
+        // });
 
         for (const linkFolder of linksToWatch) {
           this.subs.push(
