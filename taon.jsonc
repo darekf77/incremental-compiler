@@ -18,7 +18,8 @@
   "appId": "com.domain.example.incremental-compiler",
 
   "autoReleaseConfigAllowedItems": [{
-    "artifactName": "npm-lib-and-cli-tool"
+    "artifactName": "npm-lib-and-cli-tool",
+    "taskName": "npm"
   }],
 
   "isCoreProject": false,
