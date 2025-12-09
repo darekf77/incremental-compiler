@@ -1,6 +1,6 @@
 {
   "name": "incremental-compiler",
-  "version": "19.0.64",
+  "version": "19.0.65",
   "scripts": {
     "taon init": "taon init",
     "taon start": "taon start",
