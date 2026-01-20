@@ -1,27 +1,20 @@
 {
   "type": "isomorphic-lib",
   "version": "v21",
-
-  "dependenciesNamesForNpmLib": [
-    "@types/glob",
-    "glob",
-    "fs-extra",
-    "chokidar",
-    "@types/chokidar",
-    "dateformat",
-    "@types/dateformat",
-    "tnp-core"
-  ],
-
+  "dependenciesNamesForNpmLib": ["@parcel/watcher", "anymatch", "glob", "this.engine"],
   "additionalNpmNames": ["taon-incremental-watcher"],
   "appId": "com.domain.example.incremental-compiler",
 
-  "autoReleaseConfigAllowedItems": [{
-    "artifactName": "npm-lib-and-cli-tool",
-    "taskName": "npm"
-  }],
+  "autoReleaseConfigAllowedItems": [
+    {
+      "artifactName": "npm-lib-and-cli-tool",
+      "taskName": "npm",
+    },
+  ],
 
   "isCoreProject": false,
+  "isomorphicDependenciesForNpmLib": ["tnp-core"],
+  "peerDependenciesNamesForNpmLib": [],
   "resources": ["README.md"],
 
   "packageJsonOverride": {
@@ -29,6 +22,6 @@
     "description": "Description for incremental-compiler. Hello world!",
     "license": "MIT",
     "private": false,
-    "scripts": {}
-  }
+    "scripts": {},
+  },
 }
