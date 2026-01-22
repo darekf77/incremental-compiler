@@ -1,7 +1,7 @@
 {
   "type": "isomorphic-lib",
   "version": "v21",
-  "dependenciesNamesForNpmLib": ["@parcel/watcher", "anymatch", "glob", "this.engine"],
+  "dependenciesNamesForNpmLib": ["@parcel/watcher", "anymatch", "glob"],
   "additionalNpmNames": ["taon-incremental-watcher"],
   "appId": "com.domain.example.incremental-compiler",
 
