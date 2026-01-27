@@ -65,7 +65,7 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
           if (fse.existsSync(p)) {
             return crossPlatformPath(path.resolve(p));
           } else {
-            Helpers.warn(
+            Helpers.logWarn(
               `[BaseClientCompiler] Task "${this.taskName}" folderPath doesn't not exist ${this.folderPath}`,
             );
             return void 0;
