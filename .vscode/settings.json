@@ -157,7 +157,7 @@
     "**/src/**"
   ],
 
-  "window.title": "npm/taon-dev/incremental-compiler  [ ${activeEditorShort} ]",
+  "window.title": "taon-dev/incremental-compiler () [ ${activeEditorShort}]",
 
   "json.schemas": [
     {
