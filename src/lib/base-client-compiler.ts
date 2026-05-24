@@ -15,9 +15,9 @@ import {
 } from './models';
 //#endregion
 
-export class BaseClientCompiler<INITIAL_PARAMS = any>
-  implements BaseClientCompilerOptions
-{
+export class BaseClientCompiler<
+  INITIAL_PARAMS = any,
+> implements BaseClientCompilerOptions {
   //#region fields & getters
   public readonly followSymlinks: boolean;
 
@@ -166,13 +166,9 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
     taskName = this.fixTaskName(taskName);
     // @ts-ignore
     this.taskName = taskName;
-    await UtilsMessages.compilationWrapper(
-      async () => {
-        await CompilerManager.Instance.syncInit(this, initialParams);
-      },
-      `${CLI.chalk.green('sync action')} for ${taskName}`,
-      'Event:',
-    );
+    const syncactiontask = Helpers.actionStarted(`sync-action: ${taskName}`);
+    await CompilerManager.Instance.syncInit(this, initialParams);
+    syncactiontask.done();
 
     if (_.isFunction(afterInitCallBack)) {
       await Helpers.runSyncOrAsync({
@@ -218,13 +214,11 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
         await this.start(options);
       }
       if (_.isFunction(this.preAsyncAction)) {
-        await UtilsMessages.compilationWrapper(
-          async () => {
-            await this.preAsyncAction((initialParams || {}) as any);
-          },
-          `${CLI.chalk.green('pre-async action')} for ${taskName}`,
-          'Event:',
+        const preasyncAction = Helpers.actionStarted(
+          `pre-async action: ${taskName}`,
         );
+        await this.preAsyncAction((initialParams || {}) as any);
+        preasyncAction.done();
       }
       await CompilerManager.Instance.asyncInit(this, initialParams || {});
     } else {
@@ -331,7 +325,7 @@ export class BaseClientCompiler<INITIAL_PARAMS = any>
   //#region private methods / fix task name
   private fixTaskName(taskName: string): string {
     if (!_.isString(taskName)) {
-      taskName = `task "${this.taskName}"`;
+      taskName = `${this.taskName}`;
     }
     return taskName;
   }
