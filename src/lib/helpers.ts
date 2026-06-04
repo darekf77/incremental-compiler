@@ -87,7 +87,7 @@ export const getFilesByPattern = ({
   Helpers.logInfo(
     `[incremental-compiler] Found ${entries.length} entries for pattern:\n${fullPattern}`,
   );
-  Helpers.logInfo(`[incremental-compiler] Task name:\n${taskName}`);
+  Helpers.logInfo(`[incremental-compiler] Task name:${taskName}`);
   // Helpers.logInfo(
   //   `Ignored patterns:\n\n${ignorePatterns.map(c => `'${c}',`).join('\n')}`,
   // );
