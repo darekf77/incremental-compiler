@@ -166,7 +166,7 @@ export class BaseClientCompiler<
     taskName = this.fixTaskName(taskName);
     // @ts-ignore
     this.taskName = taskName;
-    const syncactiontask = Helpers.actionStarted(`sync-action: ${taskName}`);
+    const syncactiontask = Helpers.actionStarted(`sync: ${taskName}`);
     await CompilerManager.Instance.syncInit(this, initialParams);
     syncactiontask.done();
 
@@ -215,7 +215,7 @@ export class BaseClientCompiler<
       }
       if (_.isFunction(this.preAsyncAction)) {
         const preasyncAction = Helpers.actionStarted(
-          `pre-async action: ${taskName}`,
+          `pre-async: ${taskName}`,
         );
         await this.preAsyncAction((initialParams || {}) as any);
         preasyncAction.done();

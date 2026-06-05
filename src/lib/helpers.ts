@@ -7,7 +7,10 @@ import {
   path,
   Utils,
   UtilsStringRegex,
+  UtilsTime,
 } from 'tnp-core/src';
+
+const maybemuchEntries = 10000;
 
 /**
  * @returns Absolute paths of files/folders matching the given pattern
@@ -74,20 +77,36 @@ export const getFilesByPattern = ({
   //#endregion
 
   const fullPattern = `${globPath}/**/*`;
-
-  const entries = fg.sync(fullPattern, {
-    absolute: true,
-    dot: true,
-    followSymbolicLinks: followSymlinks,
-    ignore: ignorePatterns,
-    onlyFiles: false,
-    stats: true,
-  });
-
-  Helpers.logInfo(
-    `[incremental-compiler] Found ${entries.length} entries for pattern:\n${fullPattern}`,
+  let entries = [];
+  const timeGlob = UtilsTime.mesureExecutionTimeSync(
+    `Glob ${fullPattern}`,
+    () => {
+      entries = fg.sync(fullPattern, {
+        absolute: true,
+        dot: true,
+        followSymbolicLinks: followSymlinks,
+        ignore: ignorePatterns,
+        onlyFiles: false,
+        stats: true,
+      });
+    },
+    {
+      hideLogs: true,
+    },
   );
-  Helpers.logInfo(`[incremental-compiler] Task name:${taskName}`);
+
+  const displayStats =
+    entries.length > maybemuchEntries || timeGlob.milliseconds > 1000 * 5;
+
+  displayStats &&
+    Helpers.logInfo(
+      `[incremental-compiler] Found ${entries.length} entries for pattern:\n${fullPattern}`,
+    );
+
+  displayStats &&
+    Helpers.logInfo(
+      `[incremental-compiler] Task name:${taskName} took ${timeGlob.human}`,
+    );
   // Helpers.logInfo(
   //   `Ignored patterns:\n\n${ignorePatterns.map(c => `'${c}',`).join('\n')}`,
   // );
