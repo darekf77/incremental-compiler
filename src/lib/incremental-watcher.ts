@@ -1,5 +1,12 @@
 //#region imports
-import { _, path, frameworkName, Helpers } from 'tnp-core/src';
+import {
+  _,
+  path,
+  frameworkName,
+  Helpers,
+  tnpPackageName,
+  taonPackageName,
+} from 'tnp-core/src';
 import { chokidar } from 'tnp-core/src';
 
 import { IncrementalWatcherInstance } from './models';
@@ -16,8 +23,13 @@ export function incrementalWatcher(
     watchOptions = {} as any;
   }
 
+  // console.log(`Framework name in watcher "${frameworkName}"`);
   // default to parcel watcher
-  watchOptions.engine = watchOptions.engine || '@parcel/watcher';
+  watchOptions.engine =
+    watchOptions.engine ||
+    (frameworkName === tnpPackageName || frameworkName === taonPackageName
+      ? '@parcel/watcher'
+      : 'chokidar');
 
   Helpers.logInfo(`Using watcher: ${watchOptions.engine}`);
 
