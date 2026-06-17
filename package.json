@@ -1,6 +1,6 @@
 {
   "name": "incremental-compiler",
-  "version": "21.0.48",
+  "version": "21.0.49",
   "scripts": {
     "taon init": "taon init",
     "taon start": "taon start",
@@ -456,5 +456,9 @@
     "@parcel/watcher-linux-x64-glibc": "2.5.1",
     "@parcel/watcher-win32-x64-msvc": "2.5.1"
   },
-  "bin": {}
+  "bin": {
+    "incremental-compiler": "bin/incremental-compiler",
+    "incremental-compiler-debug": "bin/incremental-compiler-debug",
+    "incremental-compiler-debug-brk": "bin/incremental-compiler-debug-brk"
+  }
 }
