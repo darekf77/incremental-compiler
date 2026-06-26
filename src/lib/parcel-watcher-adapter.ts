@@ -21,12 +21,16 @@ import {
 import { IncrementalWatcherOptions } from './models';
 //#endregion
 
+interface WatcherNotifierEvent {
+  listener: Listener;
+  eventAllowed: IncrementalWatcherAllEvents;
+  eventFromWatcher: ParcelEvent;
+}
+
 /**
  * Adapter for chokidar watcher that uses @parcel/watcher under the hood
  */
-export class ParcelWatcherAdapter
-  implements Partial<IncrementalWatcherInstance>
-{
+export class ParcelWatcherAdapter implements Partial<IncrementalWatcherInstance> {
   //#region fields
   public static instances: ParcelWatcherAdapter[] = [];
 
@@ -54,6 +58,8 @@ export class ParcelWatcherAdapter
   private readonly engine: IncrementalWatcherOptions['engine'];
 
   private readonly name: IncrementalWatcherOptions['name'];
+
+  private readonly debounceEventsTime: number | undefined;
   //#endregion
 
   //#region constructor
@@ -64,6 +70,7 @@ export class ParcelWatcherAdapter
     //#region @backend
     this.ignore = [...IGNORE_BY_DEFAULT, ...(initialOptions.ignored || [])];
 
+    this.debounceEventsTime = initialOptions.debounceEventsTime;
     this.ignoreInitial = initialOptions.ignoreInitial;
     this.followSymlinks = initialOptions.followSymlinks || false;
     this.engine = initialOptions.engine;
@@ -112,7 +119,11 @@ export class ParcelWatcherAdapter
         for (const listenerData of this.listenerData) {
           const { listenerFromOnFn, allowedEvent } = listenerData;
 
-          this.notifyListener(listenerFromOnFn, allowedEvent, listenerEvent);
+          this.notifyListener({
+            listener: listenerFromOnFn,
+            eventAllowed: allowedEvent,
+            eventFromWatcher: listenerEvent,
+          });
         }
       }
     };
@@ -146,11 +157,11 @@ export class ParcelWatcherAdapter
             for (const listenerData of this.listenerData) {
               const { listenerFromOnFn, allowedEvent } = listenerData;
 
-              this.notifyListener(
-                listenerFromOnFn,
-                allowedEvent,
-                this.chokidarToParcel(eventName, absPath),
-              );
+              this.notifyListener({
+                listener: listenerFromOnFn,
+                eventAllowed: allowedEvent,
+                eventFromWatcher: this.chokidarToParcel(eventName, absPath),
+              });
             }
           });
       } else {
@@ -296,12 +307,62 @@ export class ParcelWatcherAdapter
   //#endregion
 
   //#region private methods / notify listeners
-  private notifyListener(
-    listener: Listener,
-    eventAllowed: IncrementalWatcherAllEvents,
-    eventFromWatcher: ParcelEvent,
-  ): void {
+
+  private fileDebouncers = new Map<string, ReturnType<typeof _.debounce>>();
+
+  private fileEventBuffers = new Map<string, WatcherNotifierEvent[]>();
+
+  private notifyListener(evenData: WatcherNotifierEvent): void {
     //#region @backendFunc
+    if (this.debounceEventsTime === undefined) {
+      this.handleEventData(evenData);
+      return;
+    }
+    const eventPath = evenData.eventFromWatcher.path;
+
+    const buffer = this.fileEventBuffers.get(eventPath) ?? [];
+    buffer.push(evenData);
+    this.fileEventBuffers.set(eventPath, buffer);
+
+    let run = this.fileDebouncers.get(eventPath);
+
+    if (!run) {
+      run = _.debounce(() => {
+        // console.log(
+        //   `Handle file ${eventPath} after ${this.debounceEventsTime}`,
+        // );
+        const eventDataFromQueueArr = _.uniqBy(
+          this.fileEventBuffers.get(eventPath) ?? [],
+          [
+            'eventFromWatcher' as keyof WatcherNotifierEvent,
+            'type' as keyof WatcherNotifierEvent['eventFromWatcher'],
+          ],
+        );
+        this.fileDebouncers.delete(eventPath);
+        this.fileEventBuffers.delete(eventPath);
+
+        for (const evenDataFromQueue of eventDataFromQueueArr) {
+          // console.log(
+          //   `${path.basename(evenDataFromQueue.eventFromWatcher.path)} ` +
+          //     `allowed ${evenDataFromQueue.eventAllowed} event type ${evenData.eventFromWatcher.type} debouce ${this.debounceEventsTime}`,
+          // );
+          this.handleEventData(evenDataFromQueue);
+        }
+      }, this.debounceEventsTime);
+
+      this.fileDebouncers.set(eventPath, run);
+    }
+
+    run();
+
+    //#endregion
+  }
+  //#endregion
+
+  //#region private methods / handle event data
+  private handleEventData(eventData: WatcherNotifierEvent): void {
+    //#region @backendFunc
+    const { eventAllowed, eventFromWatcher, listener } = eventData;
     if (eventFromWatcher.type === 'create') {
       if (
         fse.existsSync(eventFromWatcher.path) &&

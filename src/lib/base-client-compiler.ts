@@ -29,6 +29,8 @@ export class BaseClientCompiler<
 
   public readonly engine: IncrementalWatcherOptions['engine'];
 
+  public readonly debounceEventsTime: number | undefined;
+
   public readonly notifyOnFileUnlink: boolean;
 
   protected onlySingleRun = true;
@@ -214,9 +216,7 @@ export class BaseClientCompiler<
         await this.start(options);
       }
       if (_.isFunction(this.preAsyncAction)) {
-        const preasyncAction = Helpers.actionStarted(
-          `pre-async: ${taskName}`,
-        );
+        const preasyncAction = Helpers.actionStarted(`pre-async: ${taskName}`);
         await this.preAsyncAction((initialParams || {}) as any);
         preasyncAction.done();
       }

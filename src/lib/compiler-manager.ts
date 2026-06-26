@@ -65,7 +65,7 @@ export class CompilerManager {
                 ...(client.ignoreFolderPatter || []),
               ],
               searchStrategy: 'folders-and-files',
-              taskName: client.taskName
+              taskName: client.taskName,
             });
           }
           return folderOrFileA.concat(filesFromB);
@@ -113,6 +113,7 @@ export class CompilerManager {
       followSymlinks: client.followSymlinks,
       ignored: client.ignoreFolderPatter,
       engine: client.engine,
+      debounceEventsTime: client.debounceEventsTime,
     }).on('all', async (event, absoluteFilePath) => {
       // console.log(`[ic] event ${event}, path: ${absoluteFilePath}`);
 

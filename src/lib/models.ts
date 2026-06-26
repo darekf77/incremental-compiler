@@ -41,8 +41,9 @@ export interface BaseClientCompilerOptions {
    * node_modules is always ignored
    */
   ignoreFolderPatter?: string[];
+  debounceEventsTime?: number | undefined;
   subscribeOnlyFor?: CoreModels.FileExtension[];
-  engine?: IncrementalWatcherOptions['engine']
+  engine?: IncrementalWatcherOptions['engine'];
 }
 //#endregion
 
@@ -73,6 +74,7 @@ export interface IncrementalWatcherOptions {
   ignored?: string[];
   ignoreInitial?: boolean;
   followSymlinks?: boolean;
+  debounceEventsTime?: number;
   name: string;
   /**
    * Default is @parcel/watcher
