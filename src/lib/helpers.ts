@@ -1,4 +1,3 @@
-import anymatch from 'anymatch';
 import {
   crossPlatformPath,
   fg,

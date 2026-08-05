@@ -2,7 +2,6 @@
 import type { AsyncSubscription, Event } from '@parcel/watcher';
 import type parcelWatcher from '@parcel/watcher';
 import anymatch from 'anymatch';
-import type { IOptions } from 'glob';
 import { chokidar, fg, UtilsStringRegex } from 'tnp-core/src';
 import { crossPlatformPath, fse, glob, _ } from 'tnp-core/src';
 import { Helpers, Utils } from 'tnp-core/src';
