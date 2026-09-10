@@ -99,6 +99,7 @@ export class ParcelWatcherAdapter implements Partial<IncrementalWatcherInstance>
     // ignoreInitialPush?: boolean;
   }): Promise<void> {
     //#region @backendFunc
+    //#region @esmRemove
     options = options || {};
 
     // console.log('STARTING WATCHING - ' + this.options.name)
@@ -222,6 +223,7 @@ export class ParcelWatcherAdapter implements Partial<IncrementalWatcherInstance>
         );
       }
     }
+    //#endregion
     //#endregion
   }
   //#endregion
