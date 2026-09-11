@@ -376,7 +376,7 @@
     "pm2": "~6.0.14",
     "portfinder": "1.0.21",
     "postcss": "~8.5.15",
-    "prettier": "~3.7.4",
+    "prettier": "~3.8.1",
     "prettier-eslint": "~16.4.2",
     "pretty-error": "4.0.0",
     "primeflex": "~4.0.0",
