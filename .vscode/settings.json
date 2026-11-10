@@ -138,7 +138,8 @@
     ".ai": true,
     "databases": true,
     "**/.ai": true,
-    "**/databases": true
+    "**/databases": true,
+    "sub-projects": true
   },
 
   "[typescriptreact]": {
